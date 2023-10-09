@@ -1,4 +1,5 @@
 const {EmbedBuilder, Client} = require("discord.js");
+const { parse } = require("dotenv");
 
 // // Create Embed
  const alertEmbed = new EmbedBuilder()
@@ -11,24 +12,7 @@ const autorizeEmbed = new EmbedBuilder()
 .setColor('f2f2f2')
 .setDescription('Для того чтобы пройти авторизацию заполните и отправьте следующую анкету!!' + ' ```\n> 1. Nedchik - Богдан \n> 2. Через список в игре TSO. \n> 3. 24 года \n> 4. 1800 \n> 5. Принимать активное участие, ходить в рейды или подземелья, общаться.\n> 6. Танк\n```   ' );
 
-
-// Check Functions
-function checkPrefix(arr, pattern)
-{
-   return pattern.test(arr[0]);
-};
-
-const messageRowsRegMap = {
-    0: /^(!)(Авторизация)/g,
-    1: /^([1])+\. ([A-Z-a-z0-9]+) \- ([а-яА-Я]+) /,
-    2: /^([2])+\. ([а-яА-яA-Z-a-z]+.{19}) /,
-    3: /^([3])+\. ([0-9]+) ([а-я].{3}) /,
-    4: /^([4])+\. (\d{4}) /,
-    5: /^([5])+\. (\W{2,70}) /,
-    6: /^([6])+\. (Танк||Целитель||Дамагер)+/g
-    
-}
-
+// Need make more option
 const messageIssueRowsMap = {
   0: [
     {
@@ -50,6 +34,57 @@ const messageIssueRowsMap = {
       error: '--Неправильно оформленны UserID и имя в первом пункте ',
     },
   ],
+  2: [
+    {
+      regExp: /^([2])+\. /,
+      error: '--Неправильно оформлен номер пункта 2 ',
+    },
+    {
+      regExp: /^([2])+\. ([а-яА-яA-Z-a-z]+.{19})$/,
+      error: "Неправильно оформлен второй пункт",
+    }
+  ],
+  3: [
+    {
+      regExp: /^([3])+\. /,
+      error: "Неправильно оформлен номер пункта 3",
+    },
+    {
+      regExp: /^([3])+\. ([0-9]+) ([а-я].{3})$/,
+      error: "Неправильно оформлен третий пункт",
+    }
+  ],
+  4: [
+    {
+      regExp: /^([4])+\. /,
+      error: "Неправильно оформлен номер пункта 4",
+    },
+    {
+      regExp: /^([4])+\. (\d{4})$/,
+      error: "Неправильно указано количество Очков Героя",
+    }
+  ],
+  5: [
+    {
+      regExp: /^([5])+\. /,
+      error: "Неправильно оформлен номер пункта 5!",
+    },
+    {
+      regExp: /^([5])+\. (\W{2,70})$/,
+      error: "Неправильно оформлен пятый пункт",
+    }
+  ],
+  6: [
+    {
+      regExp: /^([6])+\. /,
+      error: "Неправильно оформлен номер пункта 6",
+    },
+    {
+      // chech this part 
+      regExp: /^([6])+\. (Танк|Целитель|Дамагер)+$|^([6])+\. (Танк|Целитель|Дамагер)+\, (Танк|Целитель|Дамагер)$|^([6])+\. (Танк|Целитель|Дамагер)+\, (Танк|Целитель|Дамагер)\, (Танк|Целитель|Дамагер)$/m,
+      error: "Неправильно указана роль в шестом пункте",
+    }, 
+  ]
 }
 
 function checkMessageRow(row, pattern){
@@ -66,13 +101,69 @@ function checkIssueRow(row, index){
   })
   return errors;
 }
-//
+
+function setUserNickname (arg, arr){
+
+  //reg UserID
+	const regUserID = / ([A-Z-a-z0-9]+)/g;
+	//reg Name
+  const regName = /([А-Яа-я]+)/g;
+	//parse userId & Name
+	const userID = arr[1].match(regUserID);
+	const name = arr[1].match(regName)
+  const nickname = userID[0] + ' ' + '(' + name[0] + ')';
+  arg.member.setNickname(nickname);
+}
+
+function setGeneralRole (arg){
+  const role = arg.guild.roles.cache.find(r => r.id === process.env.ROLE_GENERAL);
+  arg.member.roles.add(role);
+  (arg.member.roles.add(role));
+}
+function setCharacterRole(arg, arr){
+  //find role by id
+  const roleTank = arg.guild.roles.cache.find(r => r.id == process.env.ROLE_TANK);
+  const roleHealer = arg.guild.roles.cache.find(r => r.id == process.env.ROLE_HEALER);
+  const roleDamager = arg.guild.roles.cache.find(r => r.id == process.env.ROLE_DAMAGER);
+  // regular expression
+  const regexp =  / (Танк|Целитель|Дамагер)$/;
+  const regexp2 = / (Танк|Целитель|Дамагер)\, (Танк|Целитель|Дамагер)$/m;
+  const regexp3 = / (Танк|Целитель|Дамагер)\, (Танк|Целитель|Дамагер)\, (Танк|Целитель|Дамагер)$/m;
+  
+  if (parseRoles = arr[6].match(regexp3)) {
+    if (parseRoles[1].match(/(Танк|Целитель|Damager)/) || parseRoles[2].match(/(Танк|Целитель|Damager)/) || parseRoles[3].match(/(Танк|Целитель|Damager)/) ){
+      arg.member.roles.add(roleTank);
+      arg.member.roles.add(roleHealer);
+      arg.member.roles.add(roleDamager);
+    }
+  }else if (parseRoles = arr[6].match(regexp2)) {
+    if (parseRoles[1].match(/(Танк|Целитель)/) && parseRoles[2].match(/(Танк|Целитель)/)){
+      arg.member.roles.add(roleTank);
+      arg.member.roles.add(roleHealer);
+    }else if (parseRoles[1].match(/(Танк|Дамагер)/) && parseRoles[2].match(/(Танк|Дамагер)/)) {
+      arg.member.roles.add(roleTank);
+      arg.member.roles.add(roleDamager);
+    }else if (parseRoles[1].match(/(Целитель|Дамагер)/) && parseRoles[2].match(/(Целитель|Дамагер)/)) {
+      arg.member.roles.add(roleHealer);
+      arg.member.roles.add(roleDamager);
+    }
+  }else if (parseRoles = arr[6].match(regexp)) {
+    if (parseRoles[1].match(/(Танк)/)){
+      arg.member.roles.add(roleTank);
+    }else if (parseRoles[1].match(/(Целитель)/)) {
+      arg.member.roles.add(roleHealer);
+    } else if (parseRoles[1].match(/(Дамагер)/)) {
+      arg.member.roles.add(roleDamager);
+    }
+  }
+} 
+
 module.exports = {
     alertEmbed, 
     autorizeEmbed,
-    checkPrefix,
-    messageRowsRegMap, 
-    checkMessageRow, 
-    checkIssueRow
+    checkIssueRow, 
+    setUserNickname,
+    setGeneralRole,
+    setCharacterRole
     
 };
