@@ -102,7 +102,7 @@ function checkIssueRow(row, index){
   return errors;
 }
 
-function setUserNickname (arg, arr){
+function setUserNickname (message, arr){
 
   //reg UserID
 	const regUserID = / ([A-Z-a-z0-9]+)/g;
@@ -112,19 +112,20 @@ function setUserNickname (arg, arr){
 	const userID = arr[1].match(regUserID);
 	const name = arr[1].match(regName)
   const nickname = userID[0] + ' ' + '(' + name[0] + ')';
-  arg.member.setNickname(nickname);
+  message.member.setNickname(nickname);
+  console.log(nickname);
 }
 
-function setGeneralRole (arg){
-  const role = arg.guild.roles.cache.find(r => r.id === process.env.ROLE_GENERAL);
-  arg.member.roles.add(role);
-  (arg.member.roles.add(role));
+function setGeneralRole (message){
+  const role = message.guild.roles.cache.find(r => r.id === process.env.ROLE_GENERAL);
+  message.member.roles.add(role);
+  (message.member.roles.add(role));
 }
-function setCharacterRole(arg, arr){
+function setCharacterRole(message, arr){
   //find role by id
-  const roleTank = arg.guild.roles.cache.find(r => r.id == process.env.ROLE_TANK);
-  const roleHealer = arg.guild.roles.cache.find(r => r.id == process.env.ROLE_HEALER);
-  const roleDamager = arg.guild.roles.cache.find(r => r.id == process.env.ROLE_DAMAGER);
+  const roleTank = message.guild.roles.cache.find(r => r.id == process.env.ROLE_TANK);
+  const roleHealer = message.guild.roles.cache.find(r => r.id == process.env.ROLE_HEALER);
+  const roleDamager = message.guild.roles.cache.find(r => r.id == process.env.ROLE_DAMAGER);
   // regular expression
   const regexp =  / (Танк|Целитель|Дамагер)$/;
   const regexp2 = / (Танк|Целитель|Дамагер)\, (Танк|Целитель|Дамагер)$/m;
@@ -132,28 +133,28 @@ function setCharacterRole(arg, arr){
   
   if (parseRoles = arr[6].match(regexp3)) {
     if (parseRoles[1].match(/(Танк|Целитель|Damager)/) || parseRoles[2].match(/(Танк|Целитель|Damager)/) || parseRoles[3].match(/(Танк|Целитель|Damager)/) ){
-      arg.member.roles.add(roleTank);
-      arg.member.roles.add(roleHealer);
-      arg.member.roles.add(roleDamager);
+      message.member.roles.add(roleTank);
+      message.member.roles.add(roleHealer);
+      message.member.roles.add(roleDamager);
     }
   }else if (parseRoles = arr[6].match(regexp2)) {
     if (parseRoles[1].match(/(Танк|Целитель)/) && parseRoles[2].match(/(Танк|Целитель)/)){
-      arg.member.roles.add(roleTank);
-      arg.member.roles.add(roleHealer);
+      message.member.roles.add(roleTank);
+      message.member.roles.add(roleHealer);
     }else if (parseRoles[1].match(/(Танк|Дамагер)/) && parseRoles[2].match(/(Танк|Дамагер)/)) {
-      arg.member.roles.add(roleTank);
-      arg.member.roles.add(roleDamager);
+      message.member.roles.add(roleTank);
+      message.member.roles.add(roleDamager);
     }else if (parseRoles[1].match(/(Целитель|Дамагер)/) && parseRoles[2].match(/(Целитель|Дамагер)/)) {
-      arg.member.roles.add(roleHealer);
-      arg.member.roles.add(roleDamager);
+      message.member.roles.add(roleHealer);
+      message.member.roles.add(roleDamager);
     }
   }else if (parseRoles = arr[6].match(regexp)) {
     if (parseRoles[1].match(/(Танк)/)){
-      arg.member.roles.add(roleTank);
+      message.member.roles.add(roleTank);
     }else if (parseRoles[1].match(/(Целитель)/)) {
-      arg.member.roles.add(roleHealer);
+      message.member.roles.add(roleHealer);
     } else if (parseRoles[1].match(/(Дамагер)/)) {
-      arg.member.roles.add(roleDamager);
+      message.member.roles.add(roleDamager);
     }
   }
 } 
