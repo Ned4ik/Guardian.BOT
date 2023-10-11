@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 require('dotenv').config();
-const { Client, Events} = require('discord.js');
+const { Client, Events, ActivityType} = require('discord.js');
 const { 
 	alertEmbed, 
 } = require("./bot_consts");
@@ -78,8 +78,13 @@ client.on(Events.MessageCreate,  async message => {
 	
 });
 
+
 client.once('ready', () => {
 	console.log("Discord bot online")  
+	client.user.setActivity({
+		name: 'Elder Bugs Online',
+		type: ActivityType.Playing
+	})
 });
 client.login(process.env.TOKEN);
 
