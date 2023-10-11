@@ -3,11 +3,15 @@ require('dotenv').config();
 const { Client, Events} = require('discord.js');
 const { 
 	alertEmbed, 
-	checkIssueRow,
-	setUserNickname,
-	setGeneralRole,
-	setCharacterRole
-} = require("./Settings");
+} = require("./bot_consts");
+const {
+	checkIssueRow, 
+    checkBannedWords,
+    setUserNickname,
+    setGeneralRole,
+    setCharacterRole, 
+    checkMessage
+} = require('./bot_logic')
 
 const client = new Client({ 
   intents: [
@@ -28,29 +32,50 @@ client.on(Events.MessageCreate,  async message => {
 	// Message Row 
 	const messageRows = message.content.split('\n');
 	// Role consts
-	const hasGeneralRole = message.member.roles.cache.some(r => r.id === process.env.ROLE_GENERAL);
-//
+	const hasGeneralRole = message.member.roles.cache.has(process.env.ROLE_GENERAL);
+	// channel const
+	const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
+	// error const
 	const errors = [];
-	messageRows.forEach((row, index) =>{
-		errors.push(...(checkIssueRow(row, index)));
-	})
-	if(errors.length > 0){
-		const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
-		await channel.send({embeds:[alertEmbed.setColor('Red').setDescription(errors.join("\n"))]});
-	}else{
-		if(!hasGeneralRole){
-			//set General Role
-			setGeneralRole(message)
-			// set character role
-			setCharacterRole(message, messageRows);
-			//set Nickname
-			setUserNickname(message, messageRows);
+    const Errors = [];
+//
+	if (checkMessage(messageRows)) {
+		messageRows.forEach((row, index) =>{
+			errors.push(...(checkIssueRow(row, index,)));
+		})
+		if(errors.length){
+			await channel.send({embeds:[alertEmbed.setColor('Red').setDescription(errors.join("\n") + `<@${message.author.id}>`)]});
 		}else{
-			const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
-			await channel.send({embeds:[alertEmbed.setColor('Red').setDescription("Вы уже авторизированы")]});
+			messageRows.forEach((row, index)=>{
+				Errors.push(...(checkBannedWords(row, index)));
+			})
+			if(Errors.length > 0){
+				await channel.send({embeds:[alertEmbed.setColor('Red').setDescription(Errors.join("\n") + `<@${message.author.id}>`)]});
+			}else{
+				setTimeout(() =>{
+					if(hasGeneralRole === false){
+						//set General Role
+						setGeneralRole(message, messageRows)
+					
+						//set character role
+						setCharacterRole(message, messageRows);
+						
+						//set Nickname
+						setUserNickname(message, messageRows);
+			
+						//Send complete message authorize
+						channel.send({embeds:[alertEmbed.setColor('Green').setDescription("Авторизация пройдена успешно" + `<@${message.author.id}>`)]});
+					}else{
+						channel.send({embeds:[alertEmbed.setColor('Red').setDescription("Вы уже авторизированы")]});
+					}
+				}, 500)	
+				console.log(errors); 
+			}
 		}
-		console.log(errors); 
+	}else {
+    	channel.send({embeds:[alertEmbed.setColor('Red').setDescription("Анкета не соостветвует примеру!")]});
 	}
+	
 });
 
 client.once('ready', () => {
