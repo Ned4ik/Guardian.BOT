@@ -1,4 +1,4 @@
-const {EmbedBuilder, B} = require("discord.js");
+const {EmbedBuilder} = require("discord.js");
 const {
   regExpLatinBannWords,
   regExpCirilicBannWords,
@@ -138,5 +138,5 @@ module.exports = {
   WarningEmbed, 
   ErrorEmbed,
   messageIssueRowsMap,
-  messageBannedWordsMap
+  messageBannedWordsMap,
 };

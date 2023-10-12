@@ -12,9 +12,12 @@ const {
     setGeneralRole,
     setCharacterRole, 
     checkMessage, 
-	sendErrorEmbed
+	sendErrorEmbed,
+	sendMessageToArchive
 } = require('./bot_logic')
-
+const {
+	regExpIndex
+} = require('./regular_expression')
 const client = new Client({ 
   intents: [
     Discord.GatewayIntentBits.Guilds,
@@ -37,45 +40,60 @@ client.on(Events.MessageCreate,  async message => {
 	const hasGeneralRole = message.member.roles.cache.has(process.env.ROLE_GENERAL);
 	// channel const
 	const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
+	const channel_Archive = client.channels.cache.get(process.env.ARCHIVE_SEND);
 	// error const
-	const errors = [];
-    const Errors = [];
+	const errorsStructure = [];
+    const errorsBannedWord = [];
 //
 	if (checkMessage(messageRows)) {
 		messageRows.forEach((row, index) =>{
-			errors.push(...(checkIssueRow(row, index,)));
+			errorsStructure.push(...(checkIssueRow(row, index,)));
 		})
-		if(errors.length){
-			sendErrorEmbed(message, errors, channel, ErrorEmbed)
-		}else{
-			messageRows.forEach((row, index)=>{
-				Errors.push(...(checkBannedWords(row, index)));
-			})
-			if(Errors.length > 0){
-				sendErrorEmbed(message, Errors, channel, ErrorEmbed)
-			}else{
-				setTimeout(() =>{
-					if(hasGeneralRole === false){
-						//set General Role
-						setGeneralRole(message, messageRows)
-					
-						//set character role
-						setCharacterRole(message, messageRows);
-						
-						//set Nickname
-						setUserNickname(message, messageRows);
-			
-						//Send complete message authorize
-						channel.send({embeds:[WarningEmbed.setColor('Green').setDescription("Авторизация пройдена успешно" + `<@${message.author.id}>`)]});
-
-						//Check General role 
-						// If Gen role == role.Blade send message to archive else send message to archive and tag admins
-					}else{
-						channel.send({embeds:[WarningEmbed.setColor('Red').setDescription("Вы уже авторизированы")]});
-					}
-				}, 500)	
-			}
+		if(errorsStructure.length){
+			sendErrorEmbed(message, errorsStructure, channel, ErrorEmbed)
+			return;
 		}
+		messageRows.forEach((row, index)=>{
+			errorsBannedWord.push(...(checkBannedWords(row, index)));
+		})
+		if(errorsBannedWord.length > 0){
+			sendErrorEmbed(message, errorsBannedWord, channel, ErrorEmbed)
+			return
+		}
+		setTimeout(() =>{
+			if(hasGeneralRole === false){
+				setTimeout(() =>{
+					//set General Role
+					setGeneralRole(message, messageRows)
+				}, 3000)
+				
+				setTimeout(()=>{
+					//set character role
+					setCharacterRole(message, messageRows);
+				}, 4000)
+				setTimeout(() =>{
+					//set Nickname
+					setUserNickname(message, messageRows);
+				}, 5000)
+				setTimeout(()=>{
+					//Send complete message authorize
+					message.author.send({embeds:[WarningEmbed.setColor('Green').setDescription("Авторизация пройдена успешно" + `<@${message.author.id}>`)]});
+				}, 6000)
+
+				//Send Message to archive
+				setTimeout(() =>{
+					sendMessageToArchive(channel_Archive, message);
+				}, 7000)
+				//Send welcome message
+				setTimeout(() =>{
+					channel.send(`**Добро Пожаловать <@${message.author.id}> в гильдию**`);
+				}, 8000)
+			}else{
+				channel.send({embeds:[WarningEmbed.setColor('Red').setDescription("Вы уже авторизированы")]});
+			}
+		}, 500)	
+			
+		
 	}else {
     	channel.send({embeds:[WarningEmbed.setColor('Red').setDescription("Анкета не соостветвует примеру!")]});
 	}
@@ -93,5 +111,5 @@ client.once('ready', () => {
 client.login(process.env.TOKEN);
 
 // // copy message 
-// 	const channel_Archive = client.channels.cache.get(process.env.ARCHIVE_SEND);
+
 // await channel_Archive.send(message.content);
