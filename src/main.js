@@ -2,7 +2,8 @@ const Discord = require("discord.js");
 require('dotenv').config();
 const { Client, Events, ActivityType} = require('discord.js');
 const { 
-	alertEmbed, 
+	WarningEmbed, 
+	ErrorEmbed
 } = require("./bot_consts");
 const {
 	checkIssueRow, 
@@ -10,7 +11,8 @@ const {
     setUserNickname,
     setGeneralRole,
     setCharacterRole, 
-    checkMessage
+    checkMessage, 
+	sendErrorEmbed
 } = require('./bot_logic')
 
 const client = new Client({ 
@@ -44,13 +46,13 @@ client.on(Events.MessageCreate,  async message => {
 			errors.push(...(checkIssueRow(row, index,)));
 		})
 		if(errors.length){
-			await channel.send({embeds:[alertEmbed.setColor('Red').setDescription(errors.join("\n") + `<@${message.author.id}>`)]});
+			sendErrorEmbed(message, errors, channel, ErrorEmbed)
 		}else{
 			messageRows.forEach((row, index)=>{
 				Errors.push(...(checkBannedWords(row, index)));
 			})
 			if(Errors.length > 0){
-				await channel.send({embeds:[alertEmbed.setColor('Red').setDescription(Errors.join("\n") + `<@${message.author.id}>`)]});
+				sendErrorEmbed(message, Errors, channel, ErrorEmbed)
 			}else{
 				setTimeout(() =>{
 					if(hasGeneralRole === false){
@@ -64,16 +66,18 @@ client.on(Events.MessageCreate,  async message => {
 						setUserNickname(message, messageRows);
 			
 						//Send complete message authorize
-						channel.send({embeds:[alertEmbed.setColor('Green').setDescription("Авторизация пройдена успешно" + `<@${message.author.id}>`)]});
+						channel.send({embeds:[WarningEmbed.setColor('Green').setDescription("Авторизация пройдена успешно" + `<@${message.author.id}>`)]});
+
+						//Check General role 
+						// If Gen role == role.Blade send message to archive else send message to archive and tag admins
 					}else{
-						channel.send({embeds:[alertEmbed.setColor('Red').setDescription("Вы уже авторизированы")]});
+						channel.send({embeds:[WarningEmbed.setColor('Red').setDescription("Вы уже авторизированы")]});
 					}
 				}, 500)	
-				console.log(errors); 
 			}
 		}
 	}else {
-    	channel.send({embeds:[alertEmbed.setColor('Red').setDescription("Анкета не соостветвует примеру!")]});
+    	channel.send({embeds:[WarningEmbed.setColor('Red').setDescription("Анкета не соостветвует примеру!")]});
 	}
 	
 });

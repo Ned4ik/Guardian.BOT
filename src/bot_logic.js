@@ -7,7 +7,7 @@ const {
 
 //Funtions
 function checkMessage(arr) {
-    if (arr.length === 7) {
+    if (arr.length === 8) {
       return true;
     }else {
       false;
@@ -42,35 +42,34 @@ return errors;
   
 function setUserNickname (message, arr){
 //reg UserID
-    const regUserID = / ([A-Z-a-z0-9]+)/g;
+    const regUserID = / ([A-Z-a-z0-9.,$_]+)/g;
     //reg Name
-const regName = /([А-Яа-я]+)/g;
+    const regName = /([А-Яа-я]+)/g;
     //parse userId & Name
     const userID = arr[1].match(regUserID);
     const name = arr[1].match(regName)
-const nickname = userID[0] + ' ' + '(' + name[0] + ')';
-message.member.setNickname(nickname);
+    const nickname = userID[1] + ' ' + '(' + name[0] + ')';
+    message.member.setNickname(nickname);
 }
   
-function setGeneralRole (message, arr){
+function setGeneralRole (message){
 const role = message.guild.roles.cache.find(r => r.id === process.env.ROLE_GENERAL);
 message.member.roles.add(role);
 }
+
 function setCharacterRole(message, arr){
 //find role by id
 const roleTank = message.guild.roles.cache.find(r => r.id == process.env.ROLE_TANK);
 const roleHealer = message.guild.roles.cache.find(r => r.id == process.env.ROLE_HEALER);
 const roleDamager = message.guild.roles.cache.find(r => r.id == process.env.ROLE_DAMAGER);
-// regular expression
-console.log(arr.length);
 
-if (parseRoles = arr[6].match(regexpThreeRoles)) {
+if (parseRoles = arr[7].match(regexpThreeRoles)) {
     if (parseRoles[1].match(/(Танк|Целитель|Damager)/) || parseRoles[2].match(/(Танк|Целитель|Damager)/) || parseRoles[3].match(/(Танк|Целитель|Damager)/) ){
     message.member.roles.add(roleTank);
     message.member.roles.add(roleHealer);
     message.member.roles.add(roleDamager);
     }
-}else if (parseRoles = arr[6].match(regexpTwoRoles)) {
+}else if (parseRoles = arr[7].match(regexpTwoRoles)) {
     if (parseRoles[1].match(/(Танк|Целитель)/) && parseRoles[2].match(/(Танк|Целитель)/)){
     message.member.roles.add(roleTank);
     message.member.roles.add(roleHealer);
@@ -81,7 +80,7 @@ if (parseRoles = arr[6].match(regexpThreeRoles)) {
     message.member.roles.add(roleHealer);
     message.member.roles.add(roleDamager);
     }
-}else if (parseRoles = arr[6].match(regexpOneRole)) {
+}else if (parseRoles = arr[7].match(regexpOneRole)) {
     if (parseRoles[1].match(/(Танк)/)){
     message.member.roles.add(roleTank);
     }else if (parseRoles[1].match(/(Целитель)/)) {
@@ -91,6 +90,10 @@ if (parseRoles = arr[6].match(regexpThreeRoles)) {
     }
 }
 } 
+
+function sendErrorEmbed(message, errors, channel, embed){
+    channel.send({embeds:[embed.setDescription(errors.join("\n")).setFooter({text:`${message.author.username}`, iconURL: `${message.author.displayAvatarURL({dynamic: true})}` })]});
+}
 //
 
 //Exports
@@ -100,6 +103,7 @@ module.exports = {
     setUserNickname,
     setGeneralRole,
     setCharacterRole, 
-    checkMessage
+    checkMessage,
+    sendErrorEmbed
 };
 //

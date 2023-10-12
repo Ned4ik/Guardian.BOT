@@ -1,4 +1,4 @@
-const {EmbedBuilder} = require("discord.js");
+const {EmbedBuilder, B} = require("discord.js");
 const {
   regExpLatinBannWords,
   regExpCirilicBannWords,
@@ -16,9 +16,8 @@ const {
   regExpFivRowBody,
   regExpSixthRowNumber,
   regExpSixthRowBody,
-  regexpOneRole,
-  regexpTwoRoles,
-  regexpThreeRoles,
+  regExpSeventhRowNumber,
+  regExpSeventhRowBody
 } = require('./regular_expression')
 
 // Regular expression consts
@@ -56,7 +55,7 @@ const messageIssueRowsMap = {
   3: [
     {
       regExp: regExpThirdRowNumber,
-      error: "Неправильно оформлен номер пункта 3",
+      error: '--Неправильно оформлен номер пункта 3 ',
     },
     {
       regExp: regExpThirdRowBody,
@@ -70,28 +69,38 @@ const messageIssueRowsMap = {
     },
     {
       regExp: regExpFoureRowBody,
-      error: "Неправильно указано количество Очков Героя",
+      error: "Неправильно оформлен четвертый пункт",
     }
   ],
   5: [
     {
       regExp: regExpFivRowNumber,
-      error: "Неправильно оформлен номер пункта 5!",
+      error: "Неправильно оформлен номер пункта 5",
     },
     {
       regExp: regExpFivRowBody,
-      error: "Неправильно оформлен пятый пункт",
+      error: "Неправильно указано количество Очков Героя",
     }
   ],
   6: [
     {
       regExp: regExpSixthRowNumber,
-      error: "Неправильно оформлен номер пункта 6",
+      error: "Неправильно оформлен номер пункта 6!",
+    },
+    {
+      regExp: regExpSixthRowBody,
+      error: "Неправильно оформлен шестой пункт",
+    }
+  ],
+  7: [
+    {
+      regExp: regExpSeventhRowNumber,
+      error: "Неправильно оформлен номер пункта 7",
     },
     {
       // check this part 
-      regExp: regExpSixthRowBody,
-      error: "Неправильно указана роль в шестом пункте",
+      regExp: regExpSeventhRowBody,
+      error: "Неправильно указана роль в седьмом пункте",
     }, 
   ]
 }
@@ -110,20 +119,24 @@ const messageBannedWordsMap = {
 }
 //
 
+//Bot const
+//
+
+
 //// Create Embed
-const alertEmbed = new EmbedBuilder()
-.setColor('f2f2f2')
+const WarningEmbed = new EmbedBuilder()
+.setColor('Yellow')
 .setTitle('Стражи Безумия')
 .setDescription(' ')
 
-const autorizeEmbed = new EmbedBuilder()
-.setColor('f2f2f2')
-.setDescription('Для того чтобы пройти авторизацию заполните и отправьте следующую анкету!!' + ' ```\n> 1. Nedchik - Богдан \n> 2. Через список в игре TSO. \n> 3. 24 года \n> 4. 1800 \n> 5. Принимать активное участие, ходить в рейды или подземелья, общаться.\n> 6. Танк\n```   ' );
-//
+const ErrorEmbed = new EmbedBuilder()
+.setColor('Red')
+.setTitle('Oшибка авторизации')
+.setFooter({text: ' '})
 
 module.exports = {
-  alertEmbed, 
-  autorizeEmbed,
+  WarningEmbed, 
+  ErrorEmbed,
   messageIssueRowsMap,
   messageBannedWordsMap
 };
