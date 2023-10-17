@@ -83,9 +83,9 @@ function setCharacterRole(message, arr) {
 
 }
 
-function sendErrorEmbed(errors, errorBanned, channel, embed) {
-    channel.send({ embeds: [embed.setDescription(errors.join("\n") + "\n" + errorBanned.join("\n"))] });
-    // channel.send({ embeds: [embed.setDescription(errorBanned.join("\n"))] });
+function sendErrorEmbed(errors, errorBanned, message, embed) {
+    message.delete();
+    message.author.send({ embeds: [embed.setDescription(errors.join("\n") + "\n" + errorBanned.join("\n"))] });
 }
 
 function sendMessageToArchive(channel, message) {
@@ -95,12 +95,11 @@ function sendMessageToArchive(channel, message) {
         channel.send(`${message.content}`);
     } else {
         message.delete();
-        channel.send(`${message.content}\n <@&869209936830267392> **Нужно пригласить <@${message.author.id}> в гильдию**`);
+        channel.send(`${message.content}\n <@&869209936830267392> Киньте приглашение в гильдию вот этой печеньке <@${message.author.id}>`);
     }
 }
 //
 
-// .setFooter({ text: `${message.author.username}`, iconURL: `${message.author.displayAvatarURL({ dynamic: true })}` })
 //Exports
 module.exports = {
     checkIssueRow,

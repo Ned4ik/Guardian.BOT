@@ -105,24 +105,31 @@ const messageBannedWordsMap = {
 }
 //
 
-//Bot const
-//
-
-
 //// Create Embed
 const WarningEmbed = new EmbedBuilder()
   .setColor('Yellow')
-  .setTitle('Стражи Безумия')
-  .setDescription(' ')
+  .setTitle('Oшибка авторизации' + ' <a:divine_warning:1163797234215833610>')
+  .setDescription('* Вы уже авторизированы')
 
 const ErrorEmbed = new EmbedBuilder()
   .setColor('Red')
   .setTitle('Oшибка авторизации' + ' <a:error_red:1162300786638848041>')
-  .setFooter({ text: ' ' })
+
+const AcceptEmbed = new EmbedBuilder()
+.setColor('Green')
+.setTitle('Авторизация пройдена успешно' + ' <a:accepted:1163772553190449183>')
+.setDescription('### Мини гайд по дискорд серверу' +
+'\n* "Правила" - Обязательно ознакомся с гильдейскими правилами.' +
+'\n* "Походы" - Здесь ты сможешь найти расписание походов на текущую неделю и записатся в них.' + 
+'\n* "Поиск Стражей" - Здесь ты сможешь найти участников для прохождения груповых активностей.' +
+'\n* "Forum" - Гильдейская инциклопедия, здесь ты сможешь найти гайды для Подземелий и Триалов, так же там находятся гильдейские логи и многое другое.')
+
+
 
 module.exports = {
   WarningEmbed,
   ErrorEmbed,
+  AcceptEmbed,
   messageIssueRowsMap,
   messageBannedWordsMap,
 };
