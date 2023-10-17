@@ -15,6 +15,7 @@ const {
 	sendErrorEmbed,
 	sendMessageToArchive
 } = require('./bot_logic')
+
 const {
 	regExpIndex
 } = require('./regular_expression')
@@ -49,16 +50,12 @@ client.on(Events.MessageCreate,  async message => {
 		messageRows.forEach((row, index) =>{
 			errorsStructure.push(...(checkIssueRow(row, index,)));
 		})
-		if(errorsStructure.length){
-			sendErrorEmbed(message, errorsStructure, channel, ErrorEmbed)
-			return;
-		}
 		messageRows.forEach((row, index)=>{
 			errorsBannedWord.push(...(checkBannedWords(row, index)));
 		})
-		if(errorsBannedWord.length > 0){
-			sendErrorEmbed(message, errorsBannedWord, channel, ErrorEmbed)
-			return
+		if(errorsStructure.length && errorsBannedWord.length > 0){
+			sendErrorEmbed(errorsStructure, errorsBannedWord, channel, ErrorEmbed)
+			return;
 		}
 		setTimeout(() =>{
 			if(hasGeneralRole === false){
@@ -95,9 +92,9 @@ client.on(Events.MessageCreate,  async message => {
 			
 		
 	}else {
+		console.log(messageRows);
     	channel.send({embeds:[WarningEmbed.setColor('Red').setDescription("Анкета не соостветвует примеру!")]});
 	}
-	
 });
 
 
@@ -109,7 +106,3 @@ client.once('ready', () => {
 	})
 });
 client.login(process.env.TOKEN);
-
-// // copy message 
-
-// await channel_Archive.send(message.content);

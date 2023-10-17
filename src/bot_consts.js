@@ -1,107 +1,81 @@
-const {EmbedBuilder} = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const {
   regExpLatinBannWords,
   regExpCirilicBannWords,
   regExpIndex,
-  regExpFirstRow,
-  regExpFirstRowNumber,
+  regExpIndexBody,
   regExpFirstRowBody,
-  regExpSecondRowNumber,
   regExpSecondRowBody,
-  regExpThirdRowNumber,
   regExpThirdRowBody,
-  regExpFoureRowNumber,
   regExpFoureRowBody,
-  regExpFivRowNumber,
+  regExpFoureRowYear,
   regExpFivRowBody,
-  regExpSixthRowNumber,
+  regExpFivRowCP,
   regExpSixthRowBody,
-  regExpSeventhRowNumber,
-  regExpSeventhRowBody
+  regExpSeventhRowBody,
 } = require('./regular_expression')
 
 // Regular expression consts
 const messageIssueRowsMap = {
   0: [
     {
+      regExp: regExpIndexBody,
+      error: '* Неверно указана команда'
+    },
+    {
       regExp: regExpIndex,
-      error: 'Неверно указан префикс '
+      error: '* Неверно указан или отсуствует префикс.'
     }
   ],
   1: [
     {
-      regExp: regExpFirstRow,
-      error: "Неправильно оформлен первый пункт:"
-    },
-    {
-      regExp: regExpFirstRowNumber,
-      error: '--Неправильно оформлен номер пункта 1 ',
-    },
-    {
       regExp: regExpFirstRowBody,
-      error: '--Неправильно оформленны UserID и имя в первом пункте ',
-    },
+      error: "* Оформление пункта №1 не соответствует примеру. \n * P.S. Убедитесь в наличии всех символов согласно примеру, и в правильности указанного **UserID** или **Имени**)."
+    }
   ],
   2: [
     {
-      regExp: regExpSecondRowNumber,
-      error: '--Неправильно оформлен номер пункта 2 ',
-    },
-    {
       regExp: regExpSecondRowBody,
-      error: "Неправильно оформлен второй пункт",
+      error: "* Оформление пункта №2 не соответствует примеру. \n * P.S. Убедитесь в наличии всех символов согласно примеру.",
     }
   ],
   3: [
     {
-      regExp: regExpThirdRowNumber,
-      error: '--Неправильно оформлен номер пункта 3 ',
-    },
-    {
       regExp: regExpThirdRowBody,
-      error: "Неправильно оформлен третий пункт",
+      error: "* Оформление пункта №3 не соответствует примеру. \n * P.S. Убедитесь в наличии всех символов согласно примеру.",
     }
   ],
   4: [
     {
-      regExp: regExpFoureRowNumber,
-      error: "Неправильно оформлен номер пункта 4",
+      regExp: regExpFoureRowBody,
+      error: "* Оформление пункта №4 не соответствует примеру. \n * P.S. Убедитесь в наличии всех символов согласно примеру.",
     },
     {
-      regExp: regExpFoureRowBody,
-      error: "Неправильно оформлен четвертый пункт",
+      regExp: regExpFoureRowYear,
+      error: " - Указаный возраст не является действительным.",
     }
   ],
   5: [
     {
-      regExp: regExpFivRowNumber,
-      error: "Неправильно оформлен номер пункта 5",
+      regExp: regExpFivRowBody,
+      error: "*  Оформление пункта №5 не соответствует примеру \n * P.S. Убедитесь в наличии всех символов согласно примеру.",
     },
     {
-      regExp: regExpFivRowBody,
-      error: "Неправильно указано количество Очков Героя",
+      regExp: regExpFivRowCP,
+      error: " - Указанное количество Очков Героя не соответствует требованиям.",
     }
   ],
   6: [
     {
-      regExp: regExpSixthRowNumber,
-      error: "Неправильно оформлен номер пункта 6!",
-    },
-    {
       regExp: regExpSixthRowBody,
-      error: "Неправильно оформлен шестой пункт",
+      error: "* Оформление пункта №6 не соответствует примеру \n * P.S. Убедитесь в наличии всех символов согласно примеру.",
     }
   ],
   7: [
     {
-      regExp: regExpSeventhRowNumber,
-      error: "Неправильно оформлен номер пункта 7",
-    },
-    {
-      // check this part 
       regExp: regExpSeventhRowBody,
-      error: "Неправильно указана роль в седьмом пункте",
-    }, 
+      error: "* Оформление пункта №7 не соответствует примеру \n * P.S. Убедитесь в наличии всех символов согласно примеру. \n * Проверьте правильность написания роли(ей)",
+    }
   ]
 }
 
@@ -109,11 +83,23 @@ const messageBannedWordsMap = {
   1: [
     {
       regExp: regExpLatinBannWords,
-      error: 'Нецензурные слова в UserID запрещенны'
+      error: '* Нецензурные слова в UserID запрещенны'
     },
     {
       regExp: regExpCirilicBannWords,
-      error: 'Нецензурные слова в Имени запрещенны'
+      error: '* Нецензурные слова в Имени запрещенны'
+    }
+  ],
+  2: [
+    {
+      regExp: regExpCirilicBannWords,
+      error: '* Ненормативная лексика в пункте №2 запрещенна'
+    }
+  ],
+  6: [
+    {
+      regExp: regExpCirilicBannWords,
+      error: '* Ненормативная лексика в пункте №6 запрещенна'
     }
   ],
 }
@@ -125,17 +111,17 @@ const messageBannedWordsMap = {
 
 //// Create Embed
 const WarningEmbed = new EmbedBuilder()
-.setColor('Yellow')
-.setTitle('Стражи Безумия')
-.setDescription(' ')
+  .setColor('Yellow')
+  .setTitle('Стражи Безумия')
+  .setDescription(' ')
 
 const ErrorEmbed = new EmbedBuilder()
-.setColor('Red')
-.setTitle('Oшибка авторизации')
-.setFooter({text: ' '})
+  .setColor('Red')
+  .setTitle('Oшибка авторизации' + ' <a:error_red:1162300786638848041>')
+  .setFooter({ text: ' ' })
 
 module.exports = {
-  WarningEmbed, 
+  WarningEmbed,
   ErrorEmbed,
   messageIssueRowsMap,
   messageBannedWordsMap,

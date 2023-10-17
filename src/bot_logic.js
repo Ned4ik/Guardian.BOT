@@ -81,36 +81,11 @@ function setCharacterRole(message, arr) {
         }
     });
 
-    // if (parseRoles = arr[7].match(regexpThreeRoles)) {
-    //     if (parseRoles[1].match(/(Танк|Целитель|Damager)/) || parseRoles[2].match(/(Танк|Целитель|Damager)/) || parseRoles[3].match(/(Танк|Целитель|Damager)/) ){
-    //     message.member.roles.add(roleTank);
-    //     message.member.roles.add(roleHealer);
-    //     message.member.roles.add(roleDamager);
-    //     }
-    // }else if (parseRoles = arr[7].match(regexpTwoRoles)) {
-    //     if (parseRoles[1].match(/(Танк|Целитель)/) && parseRoles[2].match(/(Танк|Целитель)/)){
-    //     message.member.roles.add(roleTank);
-    //     message.member.roles.add(roleHealer);
-    //     }else if (parseRoles[1].match(/(Танк|Дамагер)/) && parseRoles[2].match(/(Танк|Дамагер)/)) {
-    //     message.member.roles.add(roleTank);
-    //     message.member.roles.add(roleDamager);
-    //     }else if (parseRoles[1].match(/(Целитель|Дамагер)/) && parseRoles[2].match(/(Целитель|Дамагер)/)) {
-    //     message.member.roles.add(roleHealer);
-    //     message.member.roles.add(roleDamager);
-    //     }
-    // }else if (parseRoles = arr[7].match(regexpOneRole)) {
-    //     if (parseRoles[1].match(/(Танк)/)){
-    //     message.member.roles.add(roleTank);
-    //     }else if (parseRoles[1].match(/(Целитель)/)) {
-    //     message.member.roles.add(roleHealer);
-    //     } else if (parseRoles[1].match(/(Дамагер)/)) {
-    //     message.member.roles.add(roleDamager);
-    //     }
-    // }
 }
 
-function sendErrorEmbed(message, errors, channel, embed) {
-    channel.send({ embeds: [embed.setDescription(errors.join("\n")).setFooter({ text: `${message.author.username}`, iconURL: `${message.author.displayAvatarURL({ dynamic: true })}` })] });
+function sendErrorEmbed(errors, errorBanned, channel, embed) {
+    channel.send({ embeds: [embed.setDescription(errors.join("\n") + "\n" + errorBanned.join("\n"))] });
+    // channel.send({ embeds: [embed.setDescription(errorBanned.join("\n"))] });
 }
 
 function sendMessageToArchive(channel, message) {
@@ -125,6 +100,7 @@ function sendMessageToArchive(channel, message) {
 }
 //
 
+// .setFooter({ text: `${message.author.username}`, iconURL: `${message.author.displayAvatarURL({ dynamic: true })}` })
 //Exports
 module.exports = {
     checkIssueRow,
