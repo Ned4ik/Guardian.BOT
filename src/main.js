@@ -48,7 +48,7 @@ client.on(Events.MessageCreate, async message => {
 	const errorsBannedWord = [];
 	//
 
-	if (regExpIndexBody.test(messageRows[0])) {
+	if (regExpIndexBody.test(messageRows[0]) && message.channelId === process.env.COMMAND_CHANEL) {
 		if (checkMessage(messageRows)) {
 			messageRows.forEach((row, index) => {
 				errorsStructure.push(...(checkIssueRow(row, index,)));
@@ -86,7 +86,7 @@ client.on(Events.MessageCreate, async message => {
 					}, 7000)
 					//Send welcome message
 					setTimeout(() => {
-						channel.send(`Добро Пожаловать <@${message.author.id}> в Стражи Безумия` + '');
+						message.channel.send(`Добро Пожаловать <@${message.author.id}> в Стражи Безумия` + '');
 					}, 8000)
 				} else {
 					message.delete();

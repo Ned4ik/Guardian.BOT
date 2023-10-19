@@ -44,7 +44,7 @@ function setUserNickname(message, arr) {
     //reg UserID
     const regUserID = / ([A-Z-a-z0-9.,$_]+)/g;
     //reg Name
-    const regName = /([А-Яа-я]+)/g;
+    const regName = /([А-Яа-яё]+)/g;
     //parse userId & Name
     const userID = arr[1].match(regUserID);
     const name = arr[1].match(regName)
