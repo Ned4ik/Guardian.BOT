@@ -2,14 +2,6 @@ require('dotenv').config();
 const {REST, Routes} = require('discord.js');
 
 const commads = [
-    {
-      name: 'embed', 
-      description: 'send an embed'
-    },
-   {
-    name: 'привіт',
-    description: 'say hello'
-   }
 ];
  
 const rest = new REST({ version: '10'}).setToken(process.env.TOKEN);

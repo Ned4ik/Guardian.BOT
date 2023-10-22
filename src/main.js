@@ -4,7 +4,8 @@ const { Client, Events, ActivityType } = require('discord.js');
 const {
 	WarningEmbed,
 	ErrorEmbed, 
-	AcceptEmbed
+	AcceptEmbed, 
+	helperRoleCommand
 } = require("./bot_consts");
 const {
 	checkIssueRow,
@@ -14,7 +15,8 @@ const {
 	setCharacterRole,
 	checkMessage,
 	sendErrorEmbed,
-	sendMessageToArchive
+	sendMessageToArchive,
+	giveAssistantRole
 } = require('./bot_logic')
 
 const {
@@ -38,8 +40,10 @@ client.on(Events.MessageCreate, async message => {
 	//Consts
 	// Message Row 
 	const messageRows = message.content.split('\n');
+	const userMessageWithPrefix = messageRows[0].split(' ');
 	// Role consts
 	const hasGeneralRole = message.member.roles.cache.has(process.env.ROLE_GENERAL);
+	const helperRole = message.guild.roles.cache.find( r => r.id === process.env.ROLE_TANK );
 	// channel const
 	const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
 	const channel_Archive = client.channels.cache.get(process.env.ARCHIVE_SEND);
@@ -48,7 +52,7 @@ client.on(Events.MessageCreate, async message => {
 	const errorsBannedWord = [];
 	//
 
-	if (regExpIndexBody.test(messageRows[0]) && message.channelId === process.env.COMMAND_CHANEL) {
+	if (regExpIndexBody.test(messageRows[0]) && message.channelId === process.env.AUTHCOMMAND_CHANNEL) {
 		if (checkMessage(messageRows)) {
 			messageRows.forEach((row, index) => {
 				errorsStructure.push(...(checkIssueRow(row, index,)));
@@ -86,7 +90,7 @@ client.on(Events.MessageCreate, async message => {
 					}, 7000)
 					//Send welcome message
 					setTimeout(() => {
-						message.channel.send(`Добро Пожаловать <@${message.author.id}> в Стражи Безумия` + '');
+						channel.send(`Добро Пожаловать <@${message.author.id}> в Стражи Безумия` + '');
 					}, 8000)
 				} else {
 					message.delete();
@@ -100,9 +104,11 @@ client.on(Events.MessageCreate, async message => {
 			message.author.send({ embeds: [ErrorEmbed.setDescription("* Анкета не соостветвует примеру.")] });
 		}
 	}
-
+    
+	if (userMessageWithPrefix[0] === helperRoleCommand && message.channelId === process.env.COMMAND_CHANNEL ) {
+		giveAssistantRole(userMessageWithPrefix, helperRole, message);
+	}
 });
-
 
 client.once('ready', () => {
 	console.log("Discord bot online")

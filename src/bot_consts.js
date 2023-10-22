@@ -15,6 +15,9 @@ const {
   regExpSeventhRowBody,
 } = require('./regular_expression')
 
+// Command Consts
+const helperRoleCommand = "!assistant";
+
 // Regular expression consts
 const messageIssueRowsMap = {
   0: [
@@ -132,4 +135,5 @@ module.exports = {
   AcceptEmbed,
   messageIssueRowsMap,
   messageBannedWordsMap,
+  helperRoleCommand,
 };

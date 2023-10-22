@@ -72,7 +72,9 @@ function setCharacterRole(message, arr) {
     const rolesMap = {
         "Танк": roleTank,
         "Целитель": roleHealer,
-        "Дамагер": roleDamager
+        "Дамагер": roleDamager,
+        "ДД": roleDamager,
+        "Хил": roleHealer
     };
 
     [...arr[7].matchAll(regexpOneRole)].forEach((match) => {
@@ -98,6 +100,23 @@ function sendMessageToArchive(channel, message) {
         channel.send(`${message.content}\n <@&869209936830267392> Киньте приглашение в гильдию вот этой печеньке <@${message.author.id}>`);
     }
 }
+
+function giveAssistantRole(userMessage, role, message) {
+
+    const userID = userMessage[1].split(/[<@>,]/);
+    const user = message.guild.members.cache.find(user => user.id ===`${userID[2]}`);
+    setTimeout(() =>{
+        message.delete();
+        user.roles.add(role);
+        message.channel.send(`Роль ${role} успешно выдана участнику <@${userID[2]}>`);
+    }, 2000)
+    setTimeout(() => {
+        const member = message.guild.members.cache.find(user => user.id ===`${userID[2]}`);
+        member.roles.remove(role);
+        message.channel.send(`Роль ${role} успешно убрана в участника <@${userID[2]}>`);
+    }, 10800000)
+
+}
 //
 
 //Exports
@@ -109,6 +128,7 @@ module.exports = {
     setCharacterRole,
     checkMessage,
     sendErrorEmbed,
-    sendMessageToArchive
+    sendMessageToArchive,
+    giveAssistantRole
 };
 //
