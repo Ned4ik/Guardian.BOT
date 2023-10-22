@@ -1,75 +1,120 @@
 const Discord = require("discord.js");
 require('dotenv').config();
-const { Client, Events, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
-const { 
-	alertEmbed, 
-	autorizeEmbed, 
-	checkZeroRow, 
-	checkPrefix, 
-	checkMessageRow,
-	messageRowsRegMap,
-	checkIssueRow
-} = require("./Settings");
+const { Client, Events, ActivityType } = require('discord.js');
+const {
+	WarningEmbed,
+	ErrorEmbed, 
+	AcceptEmbed, 
+	helperRoleCommand
+} = require("./bot_consts");
+const {
+	checkIssueRow,
+	checkBannedWords,
+	setUserNickname,
+	setGeneralRole,
+	setCharacterRole,
+	checkMessage,
+	sendErrorEmbed,
+	sendMessageToArchive,
+	giveAssistantRole
+} = require('./bot_logic')
 
-const client = new Client({ 
-  intents: [
-    Discord.GatewayIntentBits.Guilds,
-    Discord.GatewayIntentBits.GuildMembers,
-    Discord.GatewayIntentBits.GuildMessages,
-	Discord.GatewayIntentBits.MessageContent
-  ] 
+const {
+	regExpIndexBody
+} = require('./regular_expression')
+const client = new Client({
+	intents: [
+		Discord.GatewayIntentBits.Guilds,
+		Discord.GatewayIntentBits.GuildMembers,
+		Discord.GatewayIntentBits.GuildMessages,
+		Discord.GatewayIntentBits.MessageContent
+	]
 });
 
 client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`)
+	console.log(`Logged in as ${client.user.tag}!`)
 })
 
-client.on(Events.MessageCreate,  async message => {
+client.on(Events.MessageCreate, async message => {
 	if (message.author.bot) return;
 	//Consts
-	    // Message Row 
-		const messageRows = message.content.split('\n');
-		// Role consts
-		const hasRoleTank = message.member.roles.cache.some(r => r.id === process.env.ROLE_TANK);
-        const hasRoleHealer = message.member.roles.cache.some(r => r.id === process.env.ROLE_HEALER);
-        const hasRoleDamager = message.member.roles.cache.some(r => r.id === process.env.ROLE_DAMAGER);
+	// Message Row 
+	const messageRows = message.content.split('\n');
+	const userMessageWithPrefix = messageRows[0].split(' ');
+	// Role consts
+	const hasGeneralRole = message.member.roles.cache.has(process.env.ROLE_GENERAL);
+	const helperRole = message.guild.roles.cache.find( r => r.id === process.env.ROLE_TANK );
+	// channel const
+	const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
+	const channel_Archive = client.channels.cache.get(process.env.ARCHIVE_SEND);
+	// error const
+	const errorsStructure = [];
+	const errorsBannedWord = [];
 	//
 
-	const errors = [];
-	messageRows.forEach((row, index) =>{
-		errors.push(...(checkIssueRow(row, index)));
-	})
+	if (regExpIndexBody.test(messageRows[0]) && message.channelId === process.env.AUTHCOMMAND_CHANNEL) {
+		if (checkMessage(messageRows)) {
+			messageRows.forEach((row, index) => {
+				errorsStructure.push(...(checkIssueRow(row, index,)));
+			})
+			messageRows.forEach((row, index) => {
+				errorsBannedWord.push(...(checkBannedWords(row, index)));
+			})
+			if (errorsStructure.length > 0 || errorsBannedWord.length > 0 || errorsStructure.length && errorsBannedWord > 0) {
+				sendErrorEmbed(errorsStructure, errorsBannedWord, message, ErrorEmbed)
+				return;
+			}
+			setTimeout(() => {
+				if (hasGeneralRole === false) {
+					setTimeout(() => {
+						//set General Role
+						setGeneralRole(message, messageRows)
+					}, 3000)
 
-	if(errors.length){
-		const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
-		await channel.send({embeds:[alertEmbed.setColor('Red').setDescription(errors.join("\n"))]});
+					setTimeout(() => {
+						//set character role
+						setCharacterRole(message, messageRows);
+					}, 4000)
+					setTimeout(() => {
+						//set Nickname
+						setUserNickname(message, messageRows);
+					}, 5000)
+					setTimeout(() => {
+						//Send complete message authorize
+						message.author.send({ embeds: [AcceptEmbed]});
+					}, 6000)
+
+					//Send Message to archive
+					setTimeout(() => {
+						sendMessageToArchive(channel_Archive, message);
+					}, 7000)
+					//Send welcome message
+					setTimeout(() => {
+						channel.send(`Добро Пожаловать <@${message.author.id}> в Стражи Безумия` + '');
+					}, 8000)
+				} else {
+					message.delete();
+					message.author.send({ embeds: [WarningEmbed]});
+				}
+			}, 500)
+
+
+		} else {
+			message.delete();
+			message.author.send({ embeds: [ErrorEmbed.setDescription("* Анкета не соостветвует примеру.")] });
+		}
 	}
-	console.log(errors.join("\n")); 
-
+    
+	if (userMessageWithPrefix[0] === helperRoleCommand && message.channelId === process.env.COMMAND_CHANNEL ) {
+		giveAssistantRole(userMessageWithPrefix, helperRole, message);
+	}
 });
 
 client.once('ready', () => {
-	console.log("Discord bot online")  
+	console.log("Discord bot online")
+	client.user.setActivity({
+		name: 'Elder Bugs Online',
+		type: ActivityType.Playing
+	})
 });
 client.login(process.env.TOKEN);
-
-
-
-//set role Blade
-//arg//
-// let role = message.guild.roles.cache.find(r => r.id === process.env.ROLE_GENERAL);
-// message.member.roles.add(role);
-
-// //set nickname
-// const nickname = zeroRow[2] + ' ' + '(' + zeroRow[4] + ')';
-// message.member.setNickname(nickname);
-
-// // send message alert about complete autorize
-// await message.author.send('Авторизация пройдена успешно!');
-
-// 	const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
-// 	await channel.send({embeds:[alertEmbed.setColor('Green').setDescription('Авторизация пройдена успешно!')]});
-
-// // copy message 
-// 	const channel_Archive = client.channels.cache.get(process.env.ARCHIVE_SEND);
-// await channel_Archive.send(message.content);
