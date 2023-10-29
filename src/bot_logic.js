@@ -105,17 +105,74 @@ function giveAssistantRole(userMessage, role, message) {
 
     const userID = userMessage[1].split(/[<@>,]/);
     const user = message.guild.members.cache.find(user => user.id ===`${userID[2]}`);
-    setTimeout(() =>{
-        message.delete();
-        user.roles.add(role);
-        message.channel.send(`Роль ${role} успешно выдана участнику <@${userID[2]}>`);
-    }, 2000)
-    setTimeout(() => {
-        const member = message.guild.members.cache.find(user => user.id ===`${userID[2]}`);
-        member.roles.remove(role);
-        message.channel.send(`Роль ${role} успешно убрана в участника <@${userID[2]}>`);
-    }, 10800000)
+    const hasAssistantRole = message.member.roles.cache.has(process.env.ROLE_ASSISTANT);
 
+    if (hasAssistantRole === false) {
+        setTimeout(() =>{
+            message.delete();
+            user.roles.add(role);
+            message.channel.send(`Роль ${role} успешно выдана участнику <@${userID[2]}>`);
+        }, 2000)
+        setTimeout(() => {
+            const member = message.guild.members.cache.find(user => user.id ===`${userID[2]}`);
+            member.roles.remove(role);
+            message.channel.send(`Роль ${role} успешно убрана в участника <@${userID[2]}>`);
+        }, 3000 * 60 * 60)
+    }else {
+        message.channel.send('Роль уже выдана <a:error_red:1164919280345821237>')
+    }
+   
+
+}
+
+async function deleteWelcomeMessage(message) {
+    // Const for function
+    const takeAllMessages = message.channel.messages.fetch();
+    const listMessage = [];
+    const messageId = [];
+    const userId = new RegExp(`(${message.author.id})`,'g');
+    //
+
+    // Take all message from channel & make list of messages
+    (await takeAllMessages).forEach(message => listMessage.push(message))
+        // Find necessary message by mention user & get ID
+		listMessage.forEach(message => {
+			if (message.content.match(userId)){
+                messageId.push(message.id)
+			}
+		})
+	// Find necessary welcome message & delete him 
+    const welcomeMessage = (await takeAllMessages).find(message => message.id === messageId[0]);
+    welcomeMessage.delete();
+}
+
+function sendWelcomeMessage(member) {
+    const welcomeChannel = member.guild.channels.cache.get(process.env.AUTHCOMMAND_CHANNEL);
+    welcomeChannel.send(`Добро Пожаловать <@${member.user.id}> в **Guardians of Madness**\n`+ '\n' +
+    '* Для начала ознакомься с правилами сообщества в канале <#1104797284945907763>\n' + '\n' +
+    '**Авторизацию проводит БОТ**\n' +
+    '* В начале анкеты должна присутствовать команда ``!Авторизация``, структура анкеты должна соответствовать примеру. P.S. В конце каждого пункта не должно быть пробела.\n' + '\n' +
+    '**ПРИМЕР ЗАПОЛНЕНИЯ АНКЕТЫ:  P.S. СКОПИРУЙ И ПОДСТАВЬ СВОИ ДАННЫЕ.**\n' +
+    '```\n' +
+    '!Авторизация\n' +
+    '> 1. Nedchik - (Богдан)\n' +
+    '> 2. В чате игры\n' +
+    '> 3. Да/Нет\n' +
+    '> 4. 24 года\n' +
+    '> 5. 1991 ОГ\n' +
+    '> 6. Проходить ПВЕ контент\n' +
+    '> 7. Танк, Целитель, Дамагер, ДД, Хил\n' +
+    '```\n' +
+    '** ЗНАЧЕНИЯ ПУНКТОВ: **\n' +
+    '> 1. UserID - (Имя или Прозвище **P.S. Кириллицей**)\n' +
+    '> 2. Откуда узнали про гильдию ?\n' +
+    '> 3. Являетесь членом гильдии в игре ?\n' +
+    '> 4. Сколько вам лет ?\n' +
+    '> 5. Какое у вас количество ОГ ?\n' +
+    '> 6. Чем вы планируете заниматся в рамках гильдии ?\n' +
+    '> 7. За какие роли вы играете ?\n' + '\n' +
+    '<:Discord_warning:1104859345117786242> Игроки, прошедшие авторизацию в дискорде и являющиеся членами гильдии в игре, получают роль <@&1104818103826780271>.\n' +
+    'Игроки, не вступившие в гильдию в игре, получают роль с ограничениями - <@&1122934650441056366>.\n');	
 }
 //
 
@@ -129,6 +186,8 @@ module.exports = {
     checkMessage,
     sendErrorEmbed,
     sendMessageToArchive,
-    giveAssistantRole
+    giveAssistantRole,
+    deleteWelcomeMessage,
+    sendWelcomeMessage
 };
 //

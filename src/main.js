@@ -16,7 +16,9 @@ const {
 	checkMessage,
 	sendErrorEmbed,
 	sendMessageToArchive,
-	giveAssistantRole
+	giveAssistantRole,
+	deleteWelcomeMessage,
+	sendWelcomeMessage,
 } = require('./bot_logic')
 
 const {
@@ -52,6 +54,7 @@ client.on(Events.MessageCreate, async message => {
 	const errorsBannedWord = [];
 	//
 
+	// Authorise 
 	if (regExpIndexBody.test(messageRows[0]) && message.channelId === process.env.AUTHCOMMAND_CHANNEL) {
 		if (checkMessage(messageRows)) {
 			messageRows.forEach((row, index) => {
@@ -87,6 +90,7 @@ client.on(Events.MessageCreate, async message => {
 					//Send Message to archive
 					setTimeout(() => {
 						sendMessageToArchive(channel_Archive, message);
+						deleteWelcomeMessage(message);
 					}, 7000)
 					//Send welcome message
 					setTimeout(() => {
@@ -105,9 +109,15 @@ client.on(Events.MessageCreate, async message => {
 		}
 	}
     
+    // Give assistant role
 	if (userMessageWithPrefix[0] === helperRoleCommand && message.channelId === process.env.COMMAND_CHANNEL ) {
 		giveAssistantRole(userMessageWithPrefix, helperRole, message);
 	}
+});
+
+// Send Welcome Message
+client.on('guildMemberAdd', member =>{
+	sendWelcomeMessage(member);
 });
 
 client.once('ready', () => {
