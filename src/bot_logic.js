@@ -127,22 +127,19 @@ function giveAssistantRole(userMessage, role, message) {
 
 async function deleteWelcomeMessage(message) {
     // Const for function
-    const takeAllMessages = message.channel.messages.fetch();
-    const listMessage = [];
+    const allMessages = await message.channel.messages.fetch();
     const messageId = [];
     const userId = new RegExp(`(${message.author.id})`,'g');
     //
 
-    // Take all message from channel & make list of messages
-    (await takeAllMessages).forEach(message => listMessage.push(message))
-        // Find necessary message by mention user & get ID
-		listMessage.forEach(message => {
+    // Take all message from channel & Find necessary message by mention user & get ID
+		allMessages.forEach(message => {
 			if (message.content.match(userId)){
                 messageId.push(message.id)
 			}
 		})
 	// Find necessary welcome message & delete him 
-    const welcomeMessage = (await takeAllMessages).find(message => message.id === messageId[0]);
+    const welcomeMessage = allMessages.find(message => message.id === messageId[0]);
     welcomeMessage.delete();
 }
 
@@ -176,19 +173,17 @@ function sendWelcomeMessage(member) {
 }
 
 async function reactOnJoinMessage(channel, message) {
-    const takeAllMessages = channel.messages.fetch();
-    const listMessage = [];
+    const allMessages = await channel.messages.fetch();
     const messageId = [];
     const userId = new RegExp(`(${message.author.id})`,'g');
     const regExpBodyMessage = /Добро\sПожаловать\s/g;
 
-    (await takeAllMessages).forEach(message => listMessage.push(message))
-    listMessage.forEach(message => {
+    allMessages.forEach(message => {
         if (message.content.match(userId) && message.content.match(regExpBodyMessage)){
             messageId.push(message.id)
         }
     })
-    const onJoinMessage = (await takeAllMessages).find(message => message.id === messageId[0]);
+    const onJoinMessage = (await allMessages).find(message => message.id === messageId[0]);
     onJoinMessage.react('<a:Wave_Fox:1089529003620171807>');
     onJoinMessage.react('<:file_137107048:1161183442655002675>');
     onJoinMessage.react('<:file_137107045:1161183430554419261>');
