@@ -111,15 +111,15 @@ function giveAssistantRole(userMessage, role, message) {
         setTimeout(() =>{
             message.delete();
             user.roles.add(role);
-            message.channel.send(`Роль ${role} успешно выдана участнику <@${userID[2]}>`);
+            message.channel.send(`Роль ${role} успешно выдана участнику <@${userID[2]}> <a:accepted:1164918880062427247>`);
         }, 2000)
         setTimeout(() => {
             const member = message.guild.members.cache.find(user => user.id ===`${userID[2]}`);
             member.roles.remove(role);
-            message.channel.send(`Роль ${role} успешно убрана в участника <@${userID[2]}>`);
+            message.channel.send(`Роль ${role} успешно убрана в участника <@${userID[2]}> <a:error_red:1164919280345821237>`);
         }, 3000 * 60 * 60)
     }else {
-        message.channel.send('Роль уже выдана <a:error_red:1164919280345821237>')
+        message.channel.send('Роль уже выдана <a:divine_warning:1164918996236255345>')
     }
    
 
@@ -174,6 +174,27 @@ function sendWelcomeMessage(member) {
     '<:Discord_warning:1104859345117786242> Игроки, прошедшие авторизацию в дискорде и являющиеся членами гильдии в игре, получают роль <@&1104818103826780271>.\n' +
     'Игроки, не вступившие в гильдию в игре, получают роль с ограничениями - <@&1122934650441056366>.\n');	
 }
+
+async function reactOnJoinMessage(channel, message) {
+    const takeAllMessages = channel.messages.fetch();
+    const listMessage = [];
+    const messageId = [];
+    const userId = new RegExp(`(${message.author.id})`,'g');
+    const regExpBodyMessage = /Добро\sПожаловать\s/g;
+
+    (await takeAllMessages).forEach(message => listMessage.push(message))
+    listMessage.forEach(message => {
+        if (message.content.match(userId) && message.content.match(regExpBodyMessage)){
+            messageId.push(message.id)
+        }
+    })
+    const onJoinMessage = (await takeAllMessages).find(message => message.id === messageId[0]);
+    onJoinMessage.react('<a:Wave_Fox:1089529003620171807>');
+    onJoinMessage.react('<:file_137107048:1161183442655002675>');
+    onJoinMessage.react('<:file_137107045:1161183430554419261>');
+    onJoinMessage.react('<a:Cheering_Fox:1115153842657566740>');
+    onJoinMessage.react('<a:happy_fox_dance:1115153869433995284>');
+}
 //
 
 //Exports
@@ -188,6 +209,7 @@ module.exports = {
     sendMessageToArchive,
     giveAssistantRole,
     deleteWelcomeMessage,
-    sendWelcomeMessage
+    sendWelcomeMessage,
+    reactOnJoinMessage
 };
 //

@@ -19,6 +19,7 @@ const {
 	giveAssistantRole,
 	deleteWelcomeMessage,
 	sendWelcomeMessage,
+	reactOnJoinMessage,
 } = require('./bot_logic')
 
 const {
@@ -45,7 +46,7 @@ client.on(Events.MessageCreate, async message => {
 	const userMessageWithPrefix = messageRows[0].split(' ');
 	// Role consts
 	const hasGeneralRole = message.member.roles.cache.has(process.env.ROLE_GENERAL);
-	const helperRole = message.guild.roles.cache.find( r => r.id === process.env.ROLE_TANK );
+	const helperRole = message.guild.roles.cache.find( r => r.id === process.env.ROLE_ASSISTANT);
 	// channel const
 	const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
 	const channel_Archive = client.channels.cache.get(process.env.ARCHIVE_SEND);
@@ -95,6 +96,10 @@ client.on(Events.MessageCreate, async message => {
 					//Send welcome message
 					setTimeout(() => {
 						channel.send(`Добро Пожаловать <@${message.author.id}> в Стражи Безумия` + '');
+						setTimeout(()=>{
+							reactOnJoinMessage(channel, message);
+						}, 2000)
+						
 					}, 8000)
 				} else {
 					message.delete();
