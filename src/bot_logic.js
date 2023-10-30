@@ -2,7 +2,6 @@
 const {
     messageIssueRowsMap,
     messageBannedWordsMap,
-    roleBlade
 } = require('./bot_consts')
 const {
     hasGuild,
@@ -42,13 +41,13 @@ function checkBannedWords(row, index) {
 
 function setUserNickname(message, arr) {
     //reg UserID
-    const regUserID = / ([A-Z-a-z0-9.,$_]+)/g;
+    const regUserID = /\s([A-Z-a-z0-9.,$_]+)/g;
     //reg Name
     const regName = /([А-Яа-яё]+)/g;
     //parse userId & Name
     const userID = arr[1].match(regUserID);
     const name = arr[1].match(regName)
-    const nickname = userID[1] + ' ' + '(' + name[0] + ')';
+    const nickname = userID[1] + ' ' + '(' + name[0][0].toUpperCase() + name[0].substring(1) + ')';
     message.member.setNickname(nickname);
 }
 
