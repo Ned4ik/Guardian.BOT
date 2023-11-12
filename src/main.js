@@ -20,6 +20,8 @@ const {
 	deleteWelcomeMessage,
 	sendWelcomeMessage,
 	reactOnJoinMessage,
+	trialAnketSend, 
+	reactTrialAnket,
 } = require('./bot_logic')
 
 const {
@@ -30,7 +32,8 @@ const client = new Client({
 		Discord.GatewayIntentBits.Guilds,
 		Discord.GatewayIntentBits.GuildMembers,
 		Discord.GatewayIntentBits.GuildMessages,
-		Discord.GatewayIntentBits.MessageContent
+		Discord.GatewayIntentBits.MessageContent,
+		Discord.GatewayIntentBits.GuildMessageReactions
 	]
 });
 
@@ -124,6 +127,31 @@ client.on(Events.MessageCreate, async message => {
 client.on('guildMemberAdd', member =>{
 	sendWelcomeMessage(member);
 });
+
+//Create Branch with Trial Anket 
+client.on('interactionCreate', async interaction =>{
+	if (!interaction.isChatInputCommand()) return;
+
+	if (interaction.commandName === 'hike') {
+		const channel = client.channels.cache.get(process.env.ARCHIVE_SEND)
+		const trialName = interaction.options.get('trial');
+		const hike_day = interaction.options.get('day');
+		const hike_time = interaction.options.get('time');
+		const hike_month = interaction.options.get('month');
+		const hike_day_digit = interaction.options.get('date');
+		const hike_type = interaction.options.get('type');
+		const raidLeaderRole = interaction.options.get('leader');
+
+		const thread = await channel.threads.create({
+			name: trialName.value,
+			autoArchiveDuration: 60,
+			reason: 'Need this thread'
+		});
+		trialAnketSend(trialName, hike_time, hike_month, hike_day_digit, hike_type, raidLeaderRole, thread, interaction);
+		interaction.reply('Thread created ' + thread.name);
+	}
+    
+})
 
 client.once('ready', () => {
 	console.log("Discord bot online")
