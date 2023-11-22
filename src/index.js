@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const keep_alive = require('./keep_alive.js');
+const keepAlive = require('./keep_alive.js');
 require('dotenv').config();
 const { Client, Events, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const {
@@ -161,3 +161,4 @@ client.once('ready', () => {
 	})
 });
 client.login(process.env.TOKEN);
+keepAlve();
