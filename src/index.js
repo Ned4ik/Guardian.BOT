@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const keepAlive = require('./keep_alive.js');
 require('dotenv').config();
 const { Client, Events, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const {
@@ -35,11 +34,10 @@ const client = new Client({
 		Discord.GatewayIntentBits.GuildMessageReactions
 	]
 });
-const keepAlve = require('./keep_alive.js');
 client.on("ready", () => {
 	console.log(`Logged in as ${client.user.tag}!`)
 })
-
+const keepAlive = require('./keep_alive.js');
 client.on(Events.MessageCreate, async message => {
 	if (message.author.bot) return;
 	//Consts
