@@ -37,9 +37,7 @@ const client = new Client({
 client.on("ready", () => {
 	console.log(`Logged in as ${client.user.tag}!`)
 })
-client.post('/interactions', verifyKeyMiddleware(procces.env.TOKEN), async (req, res) => {
-  res.send('key is work');
-})
+
 client.on(Events.MessageCreate, async message => {
 	if (message.author.bot) return;
 	//Consts
