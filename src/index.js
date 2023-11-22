@@ -21,7 +21,7 @@ const {
 	sendWelcomeMessage,
 	reactOnJoinMessage,
 } = require('./bot_logic')
-const keep_alive = require("./keep_alive.js");
+const keep_alive = require('./keep_alive.js');
 
 const {
 	regExpIndexBody
