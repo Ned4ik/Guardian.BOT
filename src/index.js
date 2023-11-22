@@ -34,7 +34,7 @@ const client = new Client({
 		Discord.GatewayIntentBits.GuildMessageReactions
 	]
 });
-
+const keepAlve = require('./keep_alive.js');
 client.on("ready", () => {
 	console.log(`Logged in as ${client.user.tag}!`)
 })
@@ -160,3 +160,4 @@ client.once('ready', () => {
 	})
 });
 client.login(process.env.TOKEN);
+keepAlve();
