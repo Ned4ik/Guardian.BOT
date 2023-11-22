@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 require('dotenv').config();
-const { Client, Events, ActivityType } = require('discord.js');
+const { Client, Events, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const {
 	WarningEmbed,
 	ErrorEmbed, 
@@ -20,8 +20,6 @@ const {
 	deleteWelcomeMessage,
 	sendWelcomeMessage,
 	reactOnJoinMessage,
-	trialAnketSend, 
-	reactTrialAnket,
 } = require('./bot_logic')
 
 const {
@@ -129,29 +127,30 @@ client.on('guildMemberAdd', member =>{
 });
 
 //Create Branch with Trial Anket 
-client.on('interactionCreate', async interaction =>{
-	if (!interaction.isChatInputCommand()) return;
+// client.on('interactionCreate', async interaction =>{
+// 	if (!interaction.isChatInputCommand()) return;
 
-	if (interaction.commandName === 'hike') {
-		const channel = client.channels.cache.get(process.env.ARCHIVE_SEND)
-		const trialName = interaction.options.get('trial');
-		const hike_day = interaction.options.get('day');
-		const hike_time = interaction.options.get('time');
-		const hike_month = interaction.options.get('month');
-		const hike_day_digit = interaction.options.get('date');
-		const hike_type = interaction.options.get('type');
-		const raidLeaderRole = interaction.options.get('leader');
+// 	if (interaction.commandName === 'hike') {
+// 		const channel = client.channels.cache.get(process.env.ARCHIVE_SEND)
+// 		const trialName = interaction.options.get('trial');
+// 		const hike_day = interaction.options.get('day');
+// 		const hike_time = interaction.options.get('time');
+// 		const hike_month = interaction.options.get('month');
+// 		const hike_day_digit = interaction.options.get('date');
+// 		const hike_type = interaction.options.get('type');
+// 		const raidLeaderRole = interaction.options.get('leader');
 
-		const thread = await channel.threads.create({
-			name: trialName.value,
-			autoArchiveDuration: 60,
-			reason: 'Need this thread'
-		});
-		trialAnketSend(trialName, hike_time, hike_month, hike_day_digit, hike_type, raidLeaderRole, thread, interaction);
-		interaction.reply('Thread created ' + thread.name);
-	}
+// 		const thread = await channel.threads.create({
+// 			name: trialName.value,
+// 			autoArchiveDuration: 60,
+// 			reason: 'Need this thread'
+// 		});
+
+// 		trialAnketSend(trialName, hike_time, hike_month, hike_day_digit, hike_type, raidLeaderRole, thread, interaction, client);
+// 		interaction.reply('Thread created ' + thread.name);
+// 	}
     
-})
+// })
 
 client.once('ready', () => {
 	console.log("Discord bot online")

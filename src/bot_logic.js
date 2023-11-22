@@ -1,4 +1,5 @@
 //Imports
+const { ButtonBuilder, ButtonStyle, ActionRowBuilder, createComponent, ComponentType, ButtonInteraction } = require('discord.js');
 const {
     messageIssueRowsMap,
     messageBannedWordsMap,
@@ -193,117 +194,243 @@ async function reactOnJoinMessage(channel, message) {
 }
 
 //Alpha Functions
-function reactTrialAnket(thread, trialAnket, trialAnketMap, raidLeaderRole, interaction) {
+// async function reactTrialAnket(thread, trialAnket, trialAnketMap, raidLeaderRole, commandInteraction, client) {
 
-    const tankArr = [];
-    const healerArr = [];
-    const damagerArr = [];
+//     const tankArr = [];
+//     const healerArr = [];
+//     const damagerArr = [];
 
-    const MAX_REACTIONS = 12;
-    var memberCounter = 0;
+//     const reserveTankArr = [];
+//     const reserveHealerArr = [];
+//     const reserveDamagerArr = [];
 
-    // Add raid leader to character role arr.
-    if (raidLeaderRole.value.match(/tank/)) {
-        tankArr.push(`<@${interaction.user.id}> ${raidLeaderRole.value} [Raid Leader]\n`);
-    }else if (raidLeaderRole.value.match(/healer/)) {
-        healerArr.push(`<@${interaction.user.id}> ${raidLeaderRole.value} [Raid Leader]\n`);
-    }else if (raidLeaderRole.value.match(/damager/)){
-        damagerArr.push(`<@${interaction.user.id}> ${raidLeaderRole.value} [Raid Leader]\n`);
-    }
-
-    //Create Tank filter
-    const filter = (reaction, user) => {
-        return ['1️⃣', '2️⃣', '3️⃣'].includes(reaction.emoji.name) && !user.bot;
-    };
-
-    //Create Tank Collector
-    const collector = thread.lastMessage.createReactionCollector({ filter, max: MAX_REACTIONS });
-
-    //Run Colletor Tank
-    collector.on('collect', (reaction, user) => {
-        console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
-        const memberList = [];
-
-        // Add members to character role arr
-        if (reaction.emoji.name === '1️⃣') {
-            if (tankArr.length < 2 ){
-                tankArr.push(`<@${user.id}> Tank` + '\n');
-            }
-        } else if (reaction.emoji.name === '2️⃣') {
-            if (healerArr.length < 2) {
-                healerArr.push(`<@${user.id}> Healer` + '\n');
-            }
-        } else if (reaction.emoji.name === '3️⃣') {
-            if (damagerArr.length < 8) {
-                damagerArr.push(`<@${user.id}> Damager` + '\n');
-            }
-        }
-
-        // Add members to union member list 
-        tankArr.forEach((row, index) => {
-            memberList.push(`${index + 1}. ${row}`)
-        })
-        healerArr.forEach((row, index) => {
-            memberList.push(`${index + 3}. ${row}`)
-        })
-        damagerArr.forEach((row, index) => {
-            memberList.push(`${index + 5}. ${row}`)
-        })
-
-        // Count all members and edit trial message
-        memberCounter = tankArr.length + healerArr.length + damagerArr.length;
-        const memberStatus = `**Группа:** ${memberCounter} из 12 участников`;
-        thread.lastMessage.edit(`${trialAnket}\n ${trialAnketMap}\n${memberStatus}\n${memberList.join("")}`);
-    })
-
-    collector.on('end', (collected, reason) => {
-        // if the emoji is clicked the MAX_REACTIONS times
-        if (reason === 'limit')
-            console.log(`We've just reached the maximum of ${MAX_REACTIONS} reactions.`);
-    });
-    //
-}
-
-async function trialAnketSend(trial_name, hikeTime, hike_month, hike_day_digit, hike_type, raidLeaderRole, thread, interaction) {
-
-    const trialAnketMap = {
-        'Риф Зловещих Парусов': dsrAnket,
-        'Клаудрест': crAnket
-    };
-
-    const memberStatus = `**Группа:** 1 из 12 участников`;
-    const regExpRaidLeaderTank = /tank/g;
-    const regExpRaidLeaderHealer = /healer/g;
-    const regExpRaidLeaderDamager = /damager/g;
+//     const MAX_REACTIONS = 12;
+//     var memberCounter = 0;
+//     var tankButtonClick = 0;
 
 
-    const trialAnket = `:Calendar: ${hike_day_digit.value} ${hike_month.value} :clock~1: ${hikeTime.value}  ${hike_type.value}  (длительность **2 часа 30 минут**)\n`;
-    [...trial_name.value.matchAll(/Риф Зловещих Парусов|Клаудрест/g)].forEach((match) => {
-        if (match[0]) {
-            if (raidLeaderRole.value.match(regExpRaidLeaderTank)){
-                thread.send(`${trialAnket}\n ${trialAnketMap[match[0]]}\n${memberStatus}\n1. <@${interaction.user.id}> ${raidLeaderRole.value} [Raid Leader]`);
-            }
-            else if (raidLeaderRole.value.match(regExpRaidLeaderHealer)){
-                thread.send(`${trialAnket}\n ${trialAnketMap[match[0]]}\n${memberStatus}\n1. <@${interaction.user.id}> ${raidLeaderRole.value} [Raid Leader]`);
-            }
-            else if (raidLeaderRole.value.match(regExpRaidLeaderDamager)){
-                thread.send(`${trialAnket}\n ${trialAnketMap[match[0]]}\n${memberStatus}\n1. <@${interaction.user.id}> ${raidLeaderRole.value} [Raid Leader]`);
-            }
-            setTimeout(() => {
-                reactTrialAnket(thread, trialAnket, trialAnketMap[match[0]], raidLeaderRole, interaction);
-            }, 4000);
+//     // Add raid leader to character role arr.
+//     if (raidLeaderRole.value.match(/tank/)) {
+//         const raidLeaderTank = `<@${commandInteraction.user.id}> ${raidLeaderRole.value} [Raid Leader]\n`;
+//         tankArr.push(`${raidLeaderTank}`);
+//     } else if (raidLeaderRole.value.match(/healer/)) {
+//         const raidLeaderHealer = `<@${commandInteraction.user.id}> ${raidLeaderRole.value} [Raid Leader]\n`;
+//         healerArr.push(`${raidLeaderHealer}`);
+//     } else if (raidLeaderRole.value.match(/damager/)) {
+//         const raidLeaderDamager = `<@${commandInteraction.user.id}> ${raidLeaderRole.value} [Raid Leader]\n`;
+//         damagerArr.push(`${raidLeaderDamager}`);
+//     }
+
+//     //Create Tank filter
+//     // const filter = (reaction, user) => {
+//     //     return ['1️⃣', '2️⃣', '3️⃣'].includes(reaction.emoji.name) && !user.bot;
+//     // };
+
+
+
+//     //Create Tank Collector
+//     // const collector = thread.lastMessage.createReactionCollector({ filter, max: MAX_REACTIONS });
+
+//     //Button Filter 
+//     //doesen`t work
+//     // const filter = (i) => i.user.id === interaction.button.clicker.user.id;
+//     // console.log();
+
+//     // //Button Collector 
+//     // const collector = thread.lastMessage.createMessageComponentCollector({
+//     //     filter,
+//     //     componentType: ComponentType.Button,
+
+//     // })
+
+//     //Run Colletor Tank
+//     client.on('interactionCreate', async (interaction) => {
+//         // console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+//         const memberList = [];
+//         const reserveList = [];
+//         const hasRaidLeaderRole = interaction.member.roles.cache.has(process.env.ROLE_RAIDLEADER);
+//         // const userId = new RegExp(`(${user.id})`, 'g');
+
+//         // Add members to character role arr
+//         if (!interaction.isButton()) return;
+//         console.log(`${interaction.user.id} press the button`);
+        
+
+
+
+//     if (interaction.customId === 'tankButton') {
+//         tankButtonClick++;
+//         console.log(tankButtonClick);
+           
+//             if (hasRaidLeaderRole === true)
+//             {
+//                 switch(tankButtonClick){
+//                     case 1: 
+//                     if (tankArr.join('').match(`${interaction.user.id}`)) {
+//                         tankArr.splice(`<@${interaction.user.id}>`, 1);
+//                         console.log(`delete user by id ${interaction.user.id}`);
+//                         reserveTankArr.push((`<@${interaction.user.id}> Tank [Raid Leader]` + '\n'))
+//                     }
+//                     break;
+//                     case 2:
+//                         reserveTankArr.splice(`<@${interaction.user.id}>`, 1);
+//                         thread.lastMessage.delete();
+//                         thread.delete();
+//                     break;
+//                 }
+//             }
+             
             
-        }
-    });
 
-    const threadMessage = await thread.fetch();
-    setTimeout(() => {
-        threadMessage.lastMessage.react('1️⃣');
-        threadMessage.lastMessage.react('2️⃣');
-        threadMessage.lastMessage.react('3️⃣');
-    }, 2000)
+//             //     if (tankArr.length < 2 ) {
+//             //         // if use this in multiple thread (discord send error DiscordAPIError[10062]);
+//             //             // await interaction.deferUpdate();
+//             //         //
+//             //         if (!tankArr.join('').match(interaction.user.id)){
+//             //             tankArr.push(`<@${interaction.user.id}> Tank` + '\n');
+//             //         }else{
+//             //             tankArr.splice(`<@${interaction.user.id}>`, 1);
+//             //             console.log(`delete user by id ${interaction.user.id}`);
+//             //             reserveTankArr.push((`<@${interaction.user.id}> Tank` + '\n'))
+//             //         }
+//             //         // if (!tankArr.join('').match(interaction.user.id) && !healerArr.join('').match(interaction.user.id) && !damagerArr.join('').match(interaction.user.id)) {
+//             //         //     tankArr.push(`<@${interaction.user.id}> Tank` + '\n');
+//             //         // }else{
 
-}
+//             //         // }
+//             //     } else {
+//             //         if (!tankArr.join('').match(interaction.user.id)){
+//             //             reserveTankArr.push((`<@${interaction.user.id}> Tank` + '\n'));
+//             //         }else{
+//             //             tankArr.splice(`<@${interaction.user.id}>`, 1);
+//             //             console.log(`delete user by id ${interaction.user.id}`);
+//             //             reserveTankArr.push((`<@${interaction.user.id}> Tank` + '\n'))
+
+//             //         }
+
+//             //     }
+//             // } else if (interaction.customId === 'healerButton') {
+//             //     if (healerArr.length < 2) {
+//             //         healerArr.push(`<@${interaction.user.id}> Healer` + '\n');
+//             //         // if (!healerArr.join('').match(userId) && !tankArr.join('').match(userId) && !damagerArr.join('').match(userId)) {
+
+//             //         // }
+//             //     }else {
+//             //         reserveHealerArr.push((`<@${interaction.user.id}> Healer` + '\n'));
+//             //     }
+//             // } else if (interaction.customId === 'damagerButton') {
+//             //     if (damagerArr.length < 8) {
+//             //         damagerArr.push(`<@${interaction.user.id}> Damager` + '\n');
+//             //         // if (!damagerArr.join('').match(userId) && !healerArr.join('').match(userId) && !tankArr.join('').match(userId) ) {
+
+//             //         // }
+//             //     }else{
+//             //         reserveDamagerArr.push((`<@${ interaction.user.id}> Damager` + '\n'));
+//             //     }
+//         }
+
+//         // Add members to union member list 
+//         tankArr.forEach((row, index) => {
+//             memberList.push(`${index + 1}. – ${row}`)
+//         })
+//         healerArr.forEach((row, index) => {
+//             memberList.push(`${index + 3}. ${row}`)
+//         })
+//         damagerArr.forEach((row, index) => {
+//             memberList.push(`${index + 5}. ${row}`)
+//         })
+
+//         //Add members to reserve
+//         reserveTankArr.forEach((row, index) => {
+//             reserveList.push(`${index + 1}. ${row}`)
+//         })
+//         reserveHealerArr.forEach((row, index) => {
+//             reserveList.push(`${index + 3}. ${row}`)
+//         })
+//         reserveDamagerArr.forEach((row, index) => {
+//             reserveList.push(`${index + 5}. ${row}`)
+//         })
+
+//         // Count all members and edit trial message
+//         memberCounter = tankArr.length + healerArr.length + damagerArr.length;
+//         const memberStatus = `**Группа:** ${memberCounter} из 12 участников`;
+//         const reserveStatus = `**Резерв**`
+
+//         if (reserveList.length === 0) {
+//             thread.lastMessage.edit(`${trialAnket}\n ${trialAnketMap}\n${memberStatus}\n${memberList.join("")}`);
+//         } else {
+//             thread.lastMessage.edit(`${trialAnket}\n ${trialAnketMap}\n${memberStatus}\n${memberList.join("")}\n ${reserveStatus}\n${reserveList.join("")}`);
+//         }
+
+
+
+//     })
+
+//     // collector.on('end', (collected, reason) => {
+//     //     // if the emoji is clicked the MAX_REACTIONS times
+//     //     if (reason === 'limit')
+//     //         console.log(`We've just reached the maximum of ${MAX_REACTIONS} reactions.`);
+//     // });
+
+
+// }
+
+// async function trialAnketSend(trial_name, hikeTime, hike_month, hike_day_digit, hike_type, raidLeaderRole, thread, interaction, client) {
+
+//     const trialAnketMap = {
+//         'Риф Зловещих Парусов': dsrAnket,
+//         'Клаудрест': crAnket
+//     };
+
+//     const memberStatus = `**Группа:** 1 из 12 участников`;
+//     const regExpRaidLeaderTank = /tank/g;
+//     const regExpRaidLeaderHealer = /healer/g;
+//     const regExpRaidLeaderDamager = /damager/g;
+
+//     const tankButton = new ButtonBuilder()
+//         .setLabel('Tank')
+//         .setStyle(ButtonStyle.Primary)
+//         .setCustomId('tankButton')
+
+//     const healerButton = new ButtonBuilder()
+//         .setLabel('Healer')
+//         .setStyle(ButtonStyle.Primary)
+//         .setCustomId('healerButton')
+
+//     const damagerButton = new ButtonBuilder()
+//         .setLabel('Damager')
+//         .setStyle(ButtonStyle.Primary)
+//         .setCustomId('damagerButton')
+
+//     const buttonsRow = new ActionRowBuilder().addComponents(tankButton, healerButton, damagerButton);
+
+//     const trialAnket = `:Calendar: ${hike_day_digit.value} ${hike_month.value} :clock~1: ${hikeTime.value}  ${hike_type.value}  (длительность **2 часа 30 минут**)\n`;
+//     [...trial_name.value.matchAll(/Риф Зловещих Парусов|Клаудрест/g)].forEach((match) => {
+//         if (match[0]) {
+//             if (raidLeaderRole.value.match(regExpRaidLeaderTank)) {
+//                 thread.send({ content: `${trialAnket}\n ${trialAnketMap[match[0]]}\n${memberStatus}\n1. <@${interaction.user.id}> ${raidLeaderRole.value} [Raid Leader]\n`, components: [buttonsRow] });
+//             }
+//             else if (raidLeaderRole.value.match(regExpRaidLeaderHealer)) {
+//                 thread.send({ content: `${trialAnket}\n ${trialAnketMap[match[0]]}\n${memberStatus}\n1. <@${interaction.user.id}> ${raidLeaderRole.value} [Raid Leader]\n`, components: [buttonsRow] });
+//             }
+//             else if (raidLeaderRole.value.match(regExpRaidLeaderDamager)) {
+//                 thread.send({ content: `${trialAnket}\n ${trialAnketMap[match[0]]}\n${memberStatus}\n1. <@${interaction.user.id}> ${raidLeaderRole.value} [Raid Leader]\n`, components: [buttonsRow] });
+//             }
+//             setTimeout(() => {
+//                 reactTrialAnket(thread, trialAnket, trialAnketMap[match[0]], raidLeaderRole, interaction, client);
+//             }, 4000);
+
+//         }
+//     });
+
+//     // const threadMessage = await thread.fetch();
+//     // setTimeout(() => {
+//     //     threadMessage.lastMessage.react('1️⃣');
+//     //     threadMessage.lastMessage.react('2️⃣');
+//     //     threadMessage.lastMessage.react('3️⃣');
+//     // }, 2000)
+
+// }
 //
 
 //Exports
@@ -320,7 +447,5 @@ module.exports = {
     deleteWelcomeMessage,
     sendWelcomeMessage,
     reactOnJoinMessage,
-    trialAnketSend,
-    reactTrialAnket,
 };
 //
