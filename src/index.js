@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const keep_alive = require('./keep_alive.js');
 require('dotenv').config();
 const { Client, Events, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const {
@@ -21,7 +22,6 @@ const {
 	sendWelcomeMessage,
 	reactOnJoinMessage,
 } = require('./bot_logic')
-const keep_alive = require('./keep_alive.js');
 
 const {
 	regExpIndexBody
