@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 require('dotenv').config();
-const { Client, Events, ActivityType } = require('discord.js');
+const { Client, Events, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const {
 	WarningEmbed,
 	ErrorEmbed, 
@@ -16,7 +16,10 @@ const {
 	checkMessage,
 	sendErrorEmbed,
 	sendMessageToArchive,
-	giveAssistantRole
+	giveAssistantRole,
+	deleteWelcomeMessage,
+	sendWelcomeMessage,
+	reactOnJoinMessage,
 } = require('./bot_logic')
 
 const {
@@ -27,7 +30,8 @@ const client = new Client({
 		Discord.GatewayIntentBits.Guilds,
 		Discord.GatewayIntentBits.GuildMembers,
 		Discord.GatewayIntentBits.GuildMessages,
-		Discord.GatewayIntentBits.MessageContent
+		Discord.GatewayIntentBits.MessageContent,
+		Discord.GatewayIntentBits.GuildMessageReactions
 	]
 });
 
@@ -43,7 +47,7 @@ client.on(Events.MessageCreate, async message => {
 	const userMessageWithPrefix = messageRows[0].split(' ');
 	// Role consts
 	const hasGeneralRole = message.member.roles.cache.has(process.env.ROLE_GENERAL);
-	const helperRole = message.guild.roles.cache.find( r => r.id === process.env.ROLE_TANK );
+	const helperRole = message.guild.roles.cache.find( r => r.id === process.env.ROLE_ASSISTANT);
 	// channel const
 	const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
 	const channel_Archive = client.channels.cache.get(process.env.ARCHIVE_SEND);
@@ -52,6 +56,7 @@ client.on(Events.MessageCreate, async message => {
 	const errorsBannedWord = [];
 	//
 
+	// Authorise 
 	if (regExpIndexBody.test(messageRows[0]) && message.channelId === process.env.AUTHCOMMAND_CHANNEL) {
 		if (checkMessage(messageRows)) {
 			messageRows.forEach((row, index) => {
@@ -87,10 +92,15 @@ client.on(Events.MessageCreate, async message => {
 					//Send Message to archive
 					setTimeout(() => {
 						sendMessageToArchive(channel_Archive, message);
+						deleteWelcomeMessage(message);
 					}, 7000)
 					//Send welcome message
 					setTimeout(() => {
 						channel.send(`Добро Пожаловать <@${message.author.id}> в Стражи Безумия` + '');
+						setTimeout(()=>{
+							reactOnJoinMessage(channel, message);
+						}, 2000)
+						
 					}, 8000)
 				} else {
 					message.delete();
@@ -105,10 +115,42 @@ client.on(Events.MessageCreate, async message => {
 		}
 	}
     
+    // Give assistant role
 	if (userMessageWithPrefix[0] === helperRoleCommand && message.channelId === process.env.COMMAND_CHANNEL ) {
 		giveAssistantRole(userMessageWithPrefix, helperRole, message);
 	}
 });
+
+// Send Welcome Message
+client.on('guildMemberAdd', member =>{
+	sendWelcomeMessage(member);
+});
+
+//Create Branch with Trial Anket 
+// client.on('interactionCreate', async interaction =>{
+// 	if (!interaction.isChatInputCommand()) return;
+
+// 	if (interaction.commandName === 'hike') {
+// 		const channel = client.channels.cache.get(process.env.ARCHIVE_SEND)
+// 		const trialName = interaction.options.get('trial');
+// 		const hike_day = interaction.options.get('day');
+// 		const hike_time = interaction.options.get('time');
+// 		const hike_month = interaction.options.get('month');
+// 		const hike_day_digit = interaction.options.get('date');
+// 		const hike_type = interaction.options.get('type');
+// 		const raidLeaderRole = interaction.options.get('leader');
+
+// 		const thread = await channel.threads.create({
+// 			name: trialName.value,
+// 			autoArchiveDuration: 60,
+// 			reason: 'Need this thread'
+// 		});
+
+// 		trialAnketSend(trialName, hike_time, hike_month, hike_day_digit, hike_type, raidLeaderRole, thread, interaction, client);
+// 		interaction.reply('Thread created ' + thread.name);
+// 	}
+    
+// })
 
 client.once('ready', () => {
 	console.log("Discord bot online")
