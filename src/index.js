@@ -39,7 +39,7 @@ client.on("ready", () => {
 })
 client.post('/interactions', verifyKeyMiddleware(procces.env.TOKEN), async (req, res) => {
   res.send('key is work');
-}
+})
 // const keepAlive = require('./keep_alive.js');
 client.on(Events.MessageCreate, async message => {
 	if (message.author.bot) return;
