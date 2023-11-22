@@ -7,6 +7,7 @@ const {
 	AcceptEmbed, 
 	helperRoleCommand
 } = require("./bot_consts");
+const keepAlive = require('keep_alive.js');
 const {
 	checkIssueRow,
 	checkBannedWords,
@@ -159,3 +160,4 @@ client.once('ready', () => {
 	})
 });
 client.login(process.env.TOKEN);
+keepAlive();
