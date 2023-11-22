@@ -37,7 +37,7 @@ const client = new Client({
 client.on("ready", () => {
 	console.log(`Logged in as ${client.user.tag}!`)
 })
-const keepAlive = require('./keep_alive.js');
+// const keepAlive = require('./keep_alive.js');
 client.on(Events.MessageCreate, async message => {
 	if (message.author.bot) return;
 	//Consts
@@ -159,4 +159,4 @@ client.once('ready', () => {
 	})
 });
 client.login(process.env.TOKEN);
-keepAlve();
+// keepAlve();
