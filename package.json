@@ -3,8 +3,6 @@
     "discord.js": "^14.11.0",
     "dotenv": "^16.3.1",
     "keyv": "^4.5.2",
-    "type": "module"
-
   },
   "scripts": {
     "start": "node src/index.js"
