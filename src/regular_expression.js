@@ -7,28 +7,15 @@ regExpCirilicBannWords = /(Аху|Бандера|Блэт|Бляд|Блят|Ва
 //Message regular expression
 
 // 0.Row
-regExpIndex = /(!)/
-regExpIndexBody = /(!)(Авторизация)/
-// 1.Row
-regExpFirstRowBody = /\>\s([1])+\.\s([A-Za-z._'`\-0-9]{3,20})\s\-\s\(([а-яА-Яё]{3,15})\)/,
-// 2.Row
-regExpSecondRowBody = /([>])\s([2])+\.\s([а-яА-яA-Z-a-z\s]+)/,
-// 3.Row
-regExpThirdRowBody = /^([>])\s([3])+\.\s(Да|Нет|да|нет)+$/m,
-// 4.Row
-regExpFoureRowBody = /^([>])\s([4])+\.\s(1[7-9]|2[0-9]|3[0-9]|4[0-9]|5[0-5])\s(лет|года|год)$/m, //Range 17 - 55 
-regExpFoureRowYear = /\b(1[7-9]|2[0-9]|3[0-9]|4[0-9]|5[0-5])\b/,
+regExpZeroRowBody = /\>\s([1])+\.\s([A-Za-z._'`\-0-9]{3,20})\s\-\s\(([а-яА-Яё]{3,15})\)/,
 // 5.Row
-regExpFivRowCP = /\b([1-2][0-9]{3}|[3][0-6]{3}|[1-9][0-9]{2})\b/,
-regExpFivRowBody = /^([>])\s([5])+\.\s([1-2][0-9]{3}|[3][0-6]{3}|[1-9][0-9]{2})\s(ОГ)$/m, //Range 100 - 3600
+regExpFivRowBody = /([>])\s([6])+\.\s([а-яА-я\s,.()0-9]{2,110})/,
 // 6.Row
-regExpSixthRowBody = /([>])\s([6])+\.\s([а-яА-я\s,.()0-9]{2,110})/,
-// 7.Row
-regExpSeventhRowBody = /^([>])\s([7])+\.\s(Танк|Целитель|Дамагер|ДД|Хил)+$|^([>])\s([7])+\.\s(Танк|Целитель|Дамагер|ДД|Хил)+\,\s(Танк|Целитель|Дамагер|ДД|Хил)$|^([>])\s([7])+\.\s(Танк|Целитель|Дамагер|ДД|Хил)+\,\s(Танк|Целитель|Дамагер|ДД|Хил)\,\s(Танк|Целитель|Дамагер|ДД|Хил)$/m,
+regExpSixthRowBody = /^([>])\s([7])+\.\s(Танк|Целитель|Дамагер|ДД|Хил|Шкодник|Цілитель|Хіл|дд|дамагер|танк|хил|целитель|цілитель|шкодник)+$|^([>])\s([7])+\.\s(Танк|Целитель|Дамагер|ДД|Хил|Шкодник|Цілитель|Хіл|дд|дамагер|танк|хил|целитель|цілитель|шкодник)+\-(Танк|Целитель|Дамагер|ДД|Хил|Шкодник|Цілитель|Хіл|дд|дамагер|танк|хил|целитель|цілитель|шкодник)$|^([>])\s([7])+\.\s(Танк|Целитель|Дамагер|ДД|Хил|Шкодник|Цілитель|Хіл|дд|дамагер|танк|хил|целитель|цілитель|шкодник)+\-(Танк|Целитель|Дамагер|ДД|Хил|Шкодник|Цілитель|Хіл|дд|дамагер|танк|хил|целитель|цілитель|шкодник)\-(Танк|Целитель|Дамагер|ДД|Хил|Шкодник|Цілитель|Хіл|дд|дамагер|танк|хил|целитель|цілитель|шкодник)$/m,
 
 
 //Regular expression setCharacterRole funcion
-regexpOneRole =  /(Танк|Целитель|Дамагер|ДД|Хил)/g,
+regexpOneRole =  /(Танк|Целитель|Дамагер|ДД|Хил|Цілитель|Шкодник|Хіл|дд|дамагер|танк|хил|целитель|цілитель|шкодник)/g,
 
 //Regular for setGeneral Role function
 
@@ -37,17 +24,11 @@ hasGuild = /(Да)+$/m,
 module.exports = {
     regExpLatinBannWords,
     regExpCirilicBannWords,
-    regExpIndex,
-    regExpIndexBody,
-    regExpFirstRowBody,
-    regExpSecondRowBody,
-    regExpThirdRowBody,
-    regExpFoureRowBody,
-    regExpFoureRowYear,
+
+    regExpZeroRowBody,
     regExpFivRowBody,
-    regExpFivRowCP,
     regExpSixthRowBody,
-    regExpSeventhRowBody,
+   
     regexpOneRole,
     hasGuild
 };
