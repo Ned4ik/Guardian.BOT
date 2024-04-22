@@ -120,9 +120,17 @@ function sendMessageToArchiveInteraction(channel, interaction, memberAnket, embe
     const hasGeneralRole = interaction.member.roles.cache.has(process.env.ROLE_GENERAL);
     if (hasGeneralRole) {
         if(interaction.user.avatar === null){
-            channel.send({embeds: [embed.setColor('#000000').setDescription(`${memberAnket.toString().replaceAll(',','\n')}\n\n <@${interaction.user.id}>\n`).setThumbnail(`${interaction.user.defaultAvatarURL}`).setFooter({ text: `Guardians of Madness`  + `\t\t${moment(interaction.user.joinedAt).format('l' +'  '+'LT')}`})] });
+            channel.send({embeds: [embed
+                .setColor('#1e1f22')
+                .setDescription(`${memberAnket.toString().replaceAll(',','\n')}\n\n <@${interaction.user.id}>\n`)
+                .setThumbnail(`${interaction.user.defaultAvatarURL}`)
+                .setFooter({ text: `Guardians of Madness`  + `\t\t${moment(interaction.user.joinedAt).format('l' +'  '+'LT')}`})] });
         }else{
-            channel.send({embeds: [embed.setColor('#000000').setDescription(`${memberAnket.toString().replaceAll(',','\n')}\n\n <@${interaction.user.id}>\n`).setThumbnail(`https://cdn.discordapp.com/avatars/${interaction.user.id}/${interaction.user.avatar}.png?size=256`).setFooter({ text: `Guardians of Madness` + `\t\t${moment(interaction.user.joinedAt).format('l' +'  '+'LT')}`})] });
+            channel.send({embeds: [embed
+                .setColor('#1e1f22')
+                .setDescription(`${memberAnket.toString().replaceAll(',','\n')}\n\n <@${interaction.user.id}>\n`)
+                .setThumbnail(`https://cdn.discordapp.com/avatars/${interaction.user.id}/${interaction.user.avatar}.png?size=256`)
+                .setFooter({ text: `Guardians of Madness` + `\t\t${moment(interaction.user.joinedAt).format('l' +'  '+'LT')}`})] });
         }
         
     } else {

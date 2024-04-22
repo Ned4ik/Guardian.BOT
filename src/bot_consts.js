@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, Message } = require("discord.js");
 const {
   regExpLatinBannWords,
   regExpCirilicBannWords,
@@ -97,10 +97,9 @@ _Сбор в <#1104807708303044609> за 15 минут до начала._
 
 
 //// Create Embed
-const WarningEmbed = new EmbedBuilder()
-  .setColor('Yellow')
-  .setTitle('Oшибка авторизации' + ' <a:divine_warning:1164918996236255345>')
-  .setDescription('* Вы уже авторизированы')
+const leftEmbed = new EmbedBuilder()
+  .setTitle(` `)
+  .setColor('#1e1f22')
 
 const anketEmbed = new EmbedBuilder()
   .setTitle('АНКЕТА УЧАСТНИКА')
@@ -117,7 +116,7 @@ const AcceptEmbed = new EmbedBuilder()
 
 
 module.exports = {
-  WarningEmbed,
+  leftEmbed,
   anketEmbed,
   AcceptEmbed,
   messageIssueRowsMap,

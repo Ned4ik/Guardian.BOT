@@ -1,5 +1,10 @@
 const Discord = require("discord.js");
 require('dotenv').config();
+const moment = require('moment');
+
+const{
+leftEmbed,
+} = require('../src/bot_consts')
 
 function sendWelcomeMessage(member) {
     const welcomeChannel = member.guild.channels.cache.get(process.env.AUTHCOMMAND_CHANNEL);
@@ -30,10 +35,32 @@ function sendWelcomeMessage(member) {
         'Игроки, не вступившие в гильдию в игре, получают роль с ограничениями - <@&1122934650441056366>.\n');
 }
 
+
+
+function leftMemberMessage(member, embed){
+    const leftMessage = member.guild.channels.cache.get(process.env.NOTIFICATION_CHANNEL);
+    if(member.user.avatar === null) {
+        leftMessage.send({embeds: [embed
+            .setTitle(`Системное уведомление`)
+            .setDescription(`<@${member.user.id}> **вышел**`)
+            .setThumbnail(`${member.user.defaultAvatarURL}`)
+            .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(member.user.joinedAt).format('l' +'  '+'LT')}`})]})
+       
+    }else{
+        leftMessage.send({embeds: [embed
+            .setTitle(`Системное уведомление`)
+            .setDescription(`<@${member.user.id}> **вышел**`)
+            .setThumbnail(`https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.png?size=256`)
+            .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(member.user.joinedAt).format('l' +'  '+'LT')}`})]})
+       
+    }
+   
+}
 //Exports
 module.exports = {
     // memberActivity exports
        sendWelcomeMessage,
+       leftMemberMessage,
    //
 }
    

@@ -5,6 +5,7 @@ const {
 	WarningEmbed,
 	anketEmbed,
 	AcceptEmbed,
+	leftEmbed,
 } = require("./src/bot_consts.js");
 
 const {
@@ -27,6 +28,7 @@ const {
 
 const {
 	sendWelcomeMessage,
+	leftMemberMessage
 } = require('./events/memberActivity.js')
 
 
@@ -162,9 +164,15 @@ client.on('interactionCreate', async interaction => {
 
 // Send Welcome Message
 client.on('guildMemberAdd', member => {
-	sendWelcomeMessage(member);
+	// sendWelcomeMessage(member);
+	leftMemberMessage(member, leftEmbed);
 });
+// 
 
+// Send member left message
+client.on('guildMemberRemove', member =>{
+	leftMemberMessage(member, leftEmbed);
+})
 
 //////////Alpha functions
 
@@ -186,7 +194,7 @@ client.on('interactionCreate', async interaction => {
 		});
 
 		trialAnketSend(trial, hike_date, hike_type, raidLeaderRole, thread, interaction, client);
-		interaction.reply('Thread created ' + thread.name);
+		interaction.editReply('Thread created ' + thread.name);
 	}
 
 })
