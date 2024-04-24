@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 require('dotenv').config();
-const { Client, Events, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
+const { Client, Events, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, AuditLogEvent} = require('discord.js');
 const {
 	WarningEmbed,
 	anketEmbed,
@@ -28,7 +28,9 @@ const {
 
 const {
 	sendWelcomeMessage,
-	leftMemberMessage
+	leftMemberMessage,
+	memberBanMessage,
+	kickMemberMessage,
 } = require('./events/memberActivity.js')
 
 
@@ -38,8 +40,10 @@ const client = new Client({
 		Discord.GatewayIntentBits.GuildMembers,
 		Discord.GatewayIntentBits.GuildMessages,
 		Discord.GatewayIntentBits.MessageContent,
-		Discord.GatewayIntentBits.GuildMessageReactions
-	]
+		Discord.GatewayIntentBits.GuildMessageReactions,
+		Discord.GatewayIntentBits.GuildPresences,
+		Discord.GatewayIntentBits.GuildModeration,
+	],
 });
 
 client.on("ready", () => {
@@ -50,6 +54,7 @@ client.on("ready", () => {
 client.on('interactionCreate', async interaction => {
 	await interaction.deferReply({ephemeral: true});
 
+    //Anket const
 	const memberAnkett = [];
 
 	// error const
@@ -58,12 +63,12 @@ client.on('interactionCreate', async interaction => {
 	//
 
 	// Role consts
-	const hasGeneralRole = interaction.member.roles.cache.has(process.env.ROLE_GENERAL);
+	const hasGeneralRole = interaction.member.roles.cache.has(process.env.BASE_ROLE);
     //
 
 	// channel const
-	const channel = client.channels.cache.get(process.env.AUTORIZE_SEND);
-	const channel_Archive = client.channels.cache.get(process.env.ARCHIVE_SEND);
+	const channel = client.channels.cache.get(process.env.WELCOME_CHANNEL);
+	const channel_Archive = client.channels.cache.get(process.env.ARCHIVE_CHANNEL);
 	//
 
 	if(interaction.commandName === 'authorize') {
@@ -81,7 +86,7 @@ client.on('interactionCreate', async interaction => {
 		const arrChecker = arr => arr.every(option => option !== null);
 
 		
-		if (interaction.channelId === process.env.AUTHCOMMAND_CHANNEL) {
+		if (interaction.channelId === process.env.MEMBER_AUTHORIZE_CHANNEL) {
 			
 			if (arrChecker(options) === true) {
 
@@ -161,18 +166,40 @@ client.on('interactionCreate', async interaction => {
 	}
 })
 
-
 // Send Welcome Message
 client.on('guildMemberAdd', member => {
 	// sendWelcomeMessage(member);
 	leftMemberMessage(member, leftEmbed);
 });
-// 
 
 // Send member left message
-client.on('guildMemberRemove', member =>{
+client.on('guildMemberRemove', async (member) =>{
 	leftMemberMessage(member, leftEmbed);
 })
+
+// Send member kick message
+client.on(Events.GuildAuditLogEntryCreate, async auditLog =>{
+	const {action, executor, target, reason} = auditLog;
+	if (action !== AuditLogEvent.MemberKick) return;
+	kickMemberMessage(executor, target, reason, leftEmbed);
+})
+
+//send member ban message
+client.on("guildBanAdd", async (ban) => {
+const fetchLogs = await ban.guild.fetchAuditLogs({
+	type: AuditLogEvent.MemberBanAdd,
+	limit: 1,
+});
+  const banLog = fetchLogs.entries.first();
+  if (!banLog)
+	return console.log(
+	  `${ban.user.tag} was banned from ${ban.guild.name} but no audit log could be found.`
+	);
+  const { executor, reason } = banLog;
+  memberBanMessage(executor, reason, ban, leftEmbed);
+});
+
+
 
 //////////Alpha functions
 
@@ -202,7 +229,6 @@ client.on('interactionCreate', async interaction => {
 //Button Interaction
 client.on('interactionCreate', async interaction => {
 	if(!interaction.isButton()) return;
-
 	reactTrialAnket(interaction);
 })
 //

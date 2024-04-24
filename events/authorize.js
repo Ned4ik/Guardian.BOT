@@ -44,8 +44,8 @@ function checkBannedWords(row, index) {
 }
 
 function setGeneralRoleInteraction(interaction, arr) {
-    const roleBlade = interaction.guild.roles.cache.find(r => r.id === process.env.ROLE_GENERAL);
-    const roleFriendly = interaction.guild.roles.cache.find(r => r.id === process.env.ROLE_FRIENDLY);
+    const roleBlade = interaction.guild.roles.cache.find(r => r.id === process.env.BASE_ROLE);
+    const roleFriendly = interaction.guild.roles.cache.find(r => r.id === process.env.GUEST_ROLE);
     if (hasGuild.test(arr[1])) {
         interaction.member.roles.add(roleBlade);
     } else {
@@ -55,9 +55,9 @@ function setGeneralRoleInteraction(interaction, arr) {
 
 function setCharacterRoleInteraction(interaction, arr) {
     //find role by id
-    const roleTank = interaction.guild.roles.cache.find(r => r.id == process.env.ROLE_TANK);
-    const roleHealer = interaction.guild.roles.cache.find(r => r.id == process.env.ROLE_HEALER);
-    const roleDamager = interaction.guild.roles.cache.find(r => r.id == process.env.ROLE_DAMAGER);
+    const roleTank = interaction.guild.roles.cache.find(r => r.id == process.env.TANK_ROLE);
+    const roleHealer = interaction.guild.roles.cache.find(r => r.id == process.env.HEALER_ROLE);
+    const roleDamager = interaction.guild.roles.cache.find(r => r.id == process.env.DAMAGER_ROLE);
 
     // send to const
     const rolesMap = {
@@ -112,12 +112,12 @@ async function reactOnJoinMessageInteraction(channel, interaction) {
     })
     const onJoinMessage = (await allMessages).find(message => message.id === messageId[0]);
     onJoinMessage.react('<a:Wave_Fox:1089529003620171807>');
-    onJoinMessage.react('<:role_tank:1171515513831170168>');
-    onJoinMessage.react('<:role_healer:1171515512052785264>');
+    onJoinMessage.react('<:DAMAGER_ROLE:1171515513831170168>');
+    onJoinMessage.react('<:HEALER_ROLE:1171515512052785264>');
 }
 
 function sendMessageToArchiveInteraction(channel, interaction, memberAnket, embed) {
-    const hasGeneralRole = interaction.member.roles.cache.has(process.env.ROLE_GENERAL);
+    const hasGeneralRole = interaction.member.roles.cache.has(process.env.BASE_ROLE);
     if (hasGeneralRole) {
         if(interaction.user.avatar === null){
             channel.send({embeds: [embed
