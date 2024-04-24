@@ -147,23 +147,6 @@ function sendMessageToArchiveInteraction(channel, interaction, memberAnket, embe
     
 }
 
-async function deleteWelcomeMessage(message) {
-    // Const for function
-    const allMessages = await message.channel.messages.fetch();
-    const messageId = [];
-    const userId = new RegExp(`(${message.author.id})`, 'g');
-    //
-
-    // Take all message from channel & Find necessary message by mention user & get ID
-    allMessages.forEach(message => {
-        if (message.content.match(userId)) {
-            messageId.push(message.id)
-        }
-    })
-    // Find necessary welcome message & delete him 
-    const welcomeMessage = allMessages.find(message => message.id === messageId[0]);
-    welcomeMessage.delete();
-}
 //////////
 
 //Exports
@@ -172,7 +155,6 @@ module.exports = {
        checkIssueRow,
        checkBannedWords,
        checkMessage,
-       deleteWelcomeMessage,
        setGeneralRoleInteraction,
        setCharacterRoleInteraction,
        setUserNicknameInteraction,

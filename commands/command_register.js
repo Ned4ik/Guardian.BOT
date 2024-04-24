@@ -2,67 +2,67 @@ require('dotenv').config();
 const {REST, Routes, ApplicationCommandOptionType} = require('discord.js');
 
 const commads = [
-  {
-    name: 'hike',
-    description: 'Create a branch with trial hike',
-    options: [
-      {
-        name: 'trial',
-        description: 'Enter name of Trial',
-        type: ApplicationCommandOptionType.String,
-        choices: [
-          {
-            name: 'Cloudrest',
-            value: 'Клаудрест',
-          },
-          {
-            name: 'Dreadsail Reef',
-            value: 'Риф Зловещих Парусов',
-          }
-        ]
-      },
-      {
-        name: 'date',
-        description: 'Enter number day of hike',
-        type: ApplicationCommandOptionType.String,
-      },
-      {
-        name: 'type',
-        description: 'Choose type of hike',
-        type: ApplicationCommandOptionType.String,
-        choices: [
-          {
-            name: 'Education',
-            value: 'Обучающий поход',
-          },
-          {
-            name: 'Farming',
-            value: 'Фармовый поход',
-          }
-        ]
-      },
-      {
-        name: 'leader',
-        description: 'Raid Leader role',
-        type: ApplicationCommandOptionType.String,
-        choices: [
-          {
-            name: 'Tank',
-            value: 'Tank',
-          },
-          {
-            name: 'Healer',
-            value: 'Healer',
-          }, 
-          {
-            name: 'Damager',
-            value: 'Damager',
-          },
-        ]
-      },
-    ],
+  // {
+  //   name: 'hike',
+  //   description: 'Create a branch with trial hike',
+  //   options: [
+  //     {
+  //       name: 'trial',
+  //       description: 'Enter name of Trial',
+  //       type: ApplicationCommandOptionType.String,
+  //       choices: [
+  //         {
+  //           name: 'Cloudrest',
+  //           value: 'Клаудрест',
+  //         },
+  //         {
+  //           name: 'Dreadsail Reef',
+  //           value: 'Риф Зловещих Парусов',
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       name: 'date',
+  //       description: 'Enter number day of hike',
+  //       type: ApplicationCommandOptionType.String,
+  //     },
+  //     {
+  //       name: 'type',
+  //       description: 'Choose type of hike',
+  //       type: ApplicationCommandOptionType.String,
+  //       choices: [
+  //         {
+  //           name: 'Education',
+  //           value: 'Обучающий поход',
+  //         },
+  //         {
+  //           name: 'Farming',
+  //           value: 'Фармовый поход',
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       name: 'leader',
+  //       description: 'Raid Leader role',
+  //       type: ApplicationCommandOptionType.String,
+  //       choices: [
+  //         {
+  //           name: 'Tank',
+  //           value: 'Tank',
+  //         },
+  //         {
+  //           name: 'Healer',
+  //           value: 'Healer',
+  //         }, 
+  //         {
+  //           name: 'Damager',
+  //           value: 'Damager',
+  //         },
+  //       ]
+  //     },
+  //   ],
 
-  },
+  // },
   ////////// Authorize command
   {
     name: 'authorize',
@@ -105,10 +105,10 @@ const commads = [
         require: true,
       },
       {
-        name: 'member',
+        name: 'guild_member',
         name_localizations: {
-          "ru": "участник",
-          "uk": "учасник",
+          "ru": "участник_гильдии",
+          "uk": "учасник_гільдії",
         },
         description: 'Are you guild member into game?.',
         description_localizations: {

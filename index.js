@@ -2,7 +2,6 @@ const Discord = require("discord.js");
 require('dotenv').config();
 const { Client, Events, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, AuditLogEvent} = require('discord.js');
 const {
-	WarningEmbed,
 	anketEmbed,
 	AcceptEmbed,
 	leftEmbed,
@@ -17,7 +16,6 @@ const {
     setUserNicknameInteraction,
 	sendMessageToArchiveInteraction,
 	reactOnJoinMessageInteraction,
-	deleteWelcomeMessage,
 } = require('./events/authorize.js')
 
 const {
@@ -27,7 +25,6 @@ const {
 } = require('./events/campaign.js')
 
 const {
-	sendWelcomeMessage,
 	leftMemberMessage,
 	memberBanMessage,
 	kickMemberMessage,
@@ -201,36 +198,37 @@ const fetchLogs = await ban.guild.fetchAuditLogs({
 
 
 
+
 //////////Alpha functions
 
 // Create Branch with Trial Anket 
-client.on('interactionCreate', async interaction => {
-	if (!interaction.isChatInputCommand()) return;
+// client.on('interactionCreate', async interaction => {
+// 	if (!interaction.isChatInputCommand()) return;
 	
-	if (interaction.commandName === 'hike') {
-		const channel = client.channels.cache.get(process.env.ARCHIVE_SEND)
-		const trial = interaction.options.get('trial');
-		const hike_date = interaction.options.get('date');
-		const hike_type = interaction.options.get('type');
-		const raidLeaderRole = interaction.options.get('leader');
+// 	if (interaction.commandName === 'hike') {
+// 		const channel = client.channels.cache.get(process.env.ARCHIVE_SEND)
+// 		const trial = interaction.options.get('trial');
+// 		const hike_date = interaction.options.get('date');
+// 		const hike_type = interaction.options.get('type');
+// 		const raidLeaderRole = interaction.options.get('leader');
 
-		const thread = await channel.threads.create({
-			name: trial.value,
-			autoArchiveDuration: 60,
-			reason: 'Need this thread'
-		});
+// 		const thread = await channel.threads.create({
+// 			name: trial.value,
+// 			autoArchiveDuration: 60,
+// 			reason: 'Need this thread'
+// 		});
 
-		trialAnketSend(trial, hike_date, hike_type, raidLeaderRole, thread, interaction, client);
-		interaction.editReply('Thread created ' + thread.name);
-	}
+// 		trialAnketSend(trial, hike_date, hike_type, raidLeaderRole, thread, interaction, client);
+// 		interaction.editReply('Thread created ' + thread.name);
+// 	}
 
-})
+// })
 
-//Button Interaction
-client.on('interactionCreate', async interaction => {
-	if(!interaction.isButton()) return;
-	reactTrialAnket(interaction);
-})
+// //Button Interaction
+// client.on('interactionCreate', async interaction => {
+// 	if(!interaction.isButton()) return;
+// 	reactTrialAnket(interaction);
+// })
 //
 
 //////////
