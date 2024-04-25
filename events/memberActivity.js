@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 require('dotenv').config();
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 
 // Send leftMemberMessage function
@@ -11,7 +11,7 @@ function leftMemberMessage(member, embed){
                 .setTitle(`Системное уведомление`)
                 .setDescription(`<@${member.user.id}> **вышел**`)
                 .setThumbnail(`${member.user.defaultAvatarURL}`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(member.user.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(member.user.joinedAt).tz("Europe/Kyiv").format('l' +'  '+'LT')}`})
             ]})
            
         }else{
@@ -19,7 +19,7 @@ function leftMemberMessage(member, embed){
                 .setTitle(`Системное уведомление`)
                 .setDescription(`<@${member.user.id}> **вышел**`)
                 .setThumbnail(`https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.png?size=256`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(member.user.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(member.user.joinedAt).tz("Europe/Kyiv").format('l' +'  '+'LT')}`})
         ]})
     }
    
@@ -40,7 +40,7 @@ function kickMemberMessage(executor, target, reason, embed){
                     {name: 'Исключил:', value: `${executor}`}
                 )
                 .setThumbnail(`${member.user.defaultAvatarURL}`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(target.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(target.joinedAt).tz("Europe/Kyiv").format('l' +'  '+'LT')}`})
             ]})
            
         }else{
@@ -51,7 +51,7 @@ function kickMemberMessage(executor, target, reason, embed){
                     {name: 'Исключил:', value: `${executor}`}
                 )
                 .setThumbnail(`https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.png?size=256`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(target.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(target.joinedAt).tz("Europe/Kyiv").format('l' +'  '+'LT')}`})
             ]})
         }
     }else {
@@ -64,7 +64,7 @@ function kickMemberMessage(executor, target, reason, embed){
                     {name: 'Исключил:', value: `${executor}`, inline: true},
                 )
                 .setThumbnail(`${member.user.defaultAvatarURL}`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(target.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(target.joinedAt).tz("Europe/Kyiv").format('l' +'  '+'LT')}`})
             ]})
            
         }else{
@@ -76,7 +76,7 @@ function kickMemberMessage(executor, target, reason, embed){
                     {name: 'Исключил:', value: `${executor}`, inline: true},
                 )
                 .setThumbnail(`https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.png?size=256`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(target.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(target.joinedAt).tz("Europe/Kyiv").format('l' +'  '+'LT')}`})
             ]})
         }
     }
@@ -98,7 +98,7 @@ function memberBanMessage(executor, reason, ban, embed){
                     {name: '**Выдано:**', value: `${executor}`, inline: true},
                 )
                 .setThumbnail(`${ban.user.defaultAvatarURL}`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(ban.user.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(ban.user.joinedAt).tz('Europe/Kyiv').format('l' +'  '+'LT')}`})
             ]})
            
         }else{
@@ -110,7 +110,7 @@ function memberBanMessage(executor, reason, ban, embed){
                     {name: '**Выдано:**', value: `${executor}`, inline: true},
                 )
                 .setThumbnail(`https://cdn.discordapp.com/avatars/${ban.user.id}/${ban.user.avatar}.png?size=256`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(ban.user.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(ban.user.joinedAt).tz("Europe/Kyiv").format('l' +'  '+'LT')}`})
             ]})
            
         }
@@ -123,7 +123,7 @@ function memberBanMessage(executor, reason, ban, embed){
                     {name: '**Выдано:**', value: `${executor}`, inline: true},
                 )
                 .setThumbnail(`${ban.user.defaultAvatarURL}`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(ban.user.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(ban.user.joinedAt).tz('Europe/Kyiv').format('l' +'  '+'LT')}`})
             ]})
            
         }else{
@@ -134,7 +134,7 @@ function memberBanMessage(executor, reason, ban, embed){
                     {name: '**Выдано:**', value: `${executor}`, inline: true},
                 )
                 .setThumbnail(`https://cdn.discordapp.com/avatars/${ban.user.id}/${ban.user.avatar}.png?size=256`)
-                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(ban.user.joinedAt).format('l' +'  '+'LT')}`})
+                .setFooter({text: `Guardians of Madness` + `\t\t\t${moment(ban.user.joinedAt).tz("Europe/Kyiv").format('l' +'  '+'LT')}`})
             ]})
            
         }

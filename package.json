@@ -5,6 +5,7 @@
     "express": "^4.18.2",
     "keyv": "^4.5.2",
     "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "mysql2": "^3.9.6"
   },
   "scripts": {

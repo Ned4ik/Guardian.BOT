@@ -166,10 +166,10 @@ client.on('interactionCreate', async interaction => {
 })
 
 // Send Welcome Message
-client.on('guildMemberAdd', member => {
-	// sendWelcomeMessage(member);
-	leftMemberMessage(member, leftEmbed);
-});
+// client.on('guildMemberAdd', member => {
+// 	// sendWelcomeMessage(member);
+// 	leftMemberMessage(member, leftEmbed);
+// });
 
 // Send member left message
 client.on('guildMemberRemove', async (member) =>{
