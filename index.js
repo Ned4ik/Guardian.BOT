@@ -5,6 +5,8 @@ const {
 	anketEmbed,
 	AcceptEmbed,
 	leftEmbed,
+	kickEmbed,
+	banEmbed,
 } = require("./src/bot_consts.js");
 
 const {
@@ -73,7 +75,7 @@ client.on('interactionCreate', async interaction => {
 		//Initialize command options
 		const memberID = interaction.options.get('id');
 		const memberName = interaction.options.get('name');
-		const guildMember = interaction.options.get('member');
+		const guildMember = interaction.options.get('guild_member');
 		const memberAge = interaction.options.get('age');
 		const memberCP = interaction.options.get('cp');
 		const memberCharacterRole = interaction.options.get('characters');
@@ -149,7 +151,7 @@ client.on('interactionCreate', async interaction => {
 					}, 7000)
 					//Send welcome message
 					setTimeout(() => {
-						interaction.channel.send(`Добро Пожаловать <@${interaction.user.id}> в Стражи Безумия!` + '');
+						channel.send(`Добро Пожаловать <@${interaction.user.id}> в Стражи Безумия!` + '');
 						setTimeout(() => {
 							reactOnJoinMessageInteraction(channel, interaction);
 							console.log('Welcome message sended and reacted');
@@ -178,7 +180,7 @@ client.on('guildMemberRemove', async (member) =>{
 client.on(Events.GuildAuditLogEntryCreate, async auditLog =>{
 	const {action, executor, target, reason} = auditLog;
 	if (action !== AuditLogEvent.MemberKick) return;
-	kickMemberMessage(executor, target, reason, leftEmbed);
+	kickMemberMessage(executor, target, reason, kickEmbed);
 })
 
 //send member ban message
@@ -193,11 +195,8 @@ const fetchLogs = await ban.guild.fetchAuditLogs({
 	  `${ban.user.tag} was banned from ${ban.guild.name} but no audit log could be found.`
 	);
   const { executor, reason } = banLog;
-  memberBanMessage(executor, reason, ban, leftEmbed);
+  memberBanMessage(executor, reason, ban, banEmbed);
 });
-
-
-
 
 //////////Alpha functions
 

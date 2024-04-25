@@ -2,11 +2,6 @@ const Discord = require("discord.js");
 require('dotenv').config();
 const moment = require('moment');
 
-const{
-leftEmbed,
-} = require('../src/bot_consts')
-
-
 
 // Send leftMemberMessage function
 function leftMemberMessage(member, embed){
@@ -151,7 +146,6 @@ function memberBanMessage(executor, reason, ban, embed){
 //Exports
 module.exports = {
     // memberActivity exports
-       sendWelcomeMessage,
        leftMemberMessage,
        memberBanMessage,
        kickMemberMessage,

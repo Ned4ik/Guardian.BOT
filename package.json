@@ -8,7 +8,7 @@
     "mysql2": "^3.9.6"
   },
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node index.js",
+    "commands": "node commands/command_register.js"
   }
 }

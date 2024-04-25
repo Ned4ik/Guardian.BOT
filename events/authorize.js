@@ -111,9 +111,11 @@ async function reactOnJoinMessageInteraction(channel, interaction) {
         }
     })
     const onJoinMessage = (await allMessages).find(message => message.id === messageId[0]);
-    onJoinMessage.react('<a:Wave_Fox:1089529003620171807>');
-    onJoinMessage.react('<:DAMAGER_ROLE:1171515513831170168>');
-    onJoinMessage.react('<:HEALER_ROLE:1171515512052785264>');
+    onJoinMessage.react('<:file_137107035:1161183389894856704>');
+    onJoinMessage.react('<:file_137107103:1161198656733577236>');
+    onJoinMessage.react('<:file_137107091:1161198567445250068>');
+    onJoinMessage.react('<:file_137107045:1161183430554419261>');
+    onJoinMessage.react('<a:Cheering_Fox:1115153842657566740>');
 }
 
 function sendMessageToArchiveInteraction(channel, interaction, memberAnket, embed) {

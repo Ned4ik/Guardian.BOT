@@ -101,6 +101,14 @@ const leftEmbed = new EmbedBuilder()
   .setTitle(` `)
   .setColor('#1e1f22')
 
+const banEmbed = new EmbedBuilder()
+  .setTitle(` `)
+  .setColor('#1e1f22')
+
+const kickEmbed = new EmbedBuilder()
+.setTitle(` `)
+.setColor('#1e1f22')
+
 const anketEmbed = new EmbedBuilder()
   .setTitle('АНКЕТА УЧАСТНИКА')
   .setColor('Default')
@@ -119,6 +127,8 @@ module.exports = {
   leftEmbed,
   anketEmbed,
   AcceptEmbed,
+  banEmbed,
+  kickEmbed,
   messageIssueRowsMap,
   messageBannedWordsMap,
   dsrAnket,
